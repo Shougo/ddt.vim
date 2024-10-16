@@ -1,0 +1,103 @@
+*ddt.txt*	Dark Deno Terminal interface for Vim/NeoVim
+
+Author: Shougo <Shougo.Matsu at gmail.com>
+License: MIT license
+
+CONTENTS                                                        *ddt-contents*
+
+Introduction		|ddt-introduction|
+Install			|ddt-install|
+Interface		|ddt-interface|
+  Options		  |ddt-options|
+  Functions		  |ddt-functions|
+ddt Sources		|ddt-ddu-sources|
+Examples		|ddt-examples|
+FAQ			|ddt-faq|
+Compatibility		|ddt-compatibility|
+
+
+==============================================================================
+INTRODUCTION                                                *ddt-introduction*
+
+*ddt* is the abbreviation of "Dark Deno Terminal interface".
+
+If you don't want to configure plugins, you don't have to use the plugin. It
+does not work with zero configuration. You can use other plugins.
+
+
+==============================================================================
+INSTALL                                                          *ddt-install*
+
+NOTE: ddt.vim requires NeoVim (0.10.0+) or Vim 9.0.1276+ (latest is
+recommended).
+
+Please install both Deno 1.45+ and "denops.vim" v7.0+.
+
+https://deno.land/
+https://github.com/vim-denops/denops.vim
+
+==============================================================================
+INTERFACE                                                      *ddt-interface*
+
+------------------------------------------------------------------------------
+OPTIONS                                                          *ddt-options*
+
+
+------------------------------------------------------------------------------
+FUNCTIONS                                                      *ddt-functions*
+
+
+==============================================================================
+DDU SOURCES                                                  *ddt-ddu-sources*
+
+                                                          *ddt-ddu-source-ddt*
+ddt
+		Gather ddt tabs.
+
+==============================================================================
+EXAMPLES                                                        *ddt-examples*
+>
+<
+
+==============================================================================
+FAQ                                                                  *ddt-faq*
+
+FAQ 1:                                                             |ddt-faq-1|
+	How to donate money to you?
+
+FAQ 2:                                                             |ddt-faq-2|
+	What means "dark powered"?
+
+FAQ 3:                                                             |ddt-faq-3|
+	Why ddt.vim uses Deno?
+
+------------------------------------------------------------------------------
+                                                                   *ddt-faq-1*
+Q: How to donate money to you?
+
+A: I have started github sponsorship to spend more time for Vim/NeoVim
+plugins.  You can donate money to help me!
+
+   https://github.com/sponsors/Shougo
+
+                                                                   *ddt-faq-2*
+Q: What means "dark powered"?
+
+A: I think text editor is everything in the world. I want to do everything in
+Vim(NeoVim) like Emacs. It is not allowed by |design-not| in Vim. It is not
+the light way to use Vim. So I have defined it as the dark way. I am the dark
+Vimmer. My plugins are dark powered.
+
+                                                                   *ddt-faq-3*
+Q: Why ddt.vim uses Deno?
+
+A: Deno is asynchronous and faster than Vim script and it can be used in both
+Vim and NeoVim.  The features are what I desired.
+I have created some plugins by TypeScript.  The development is very fun and
+easy to maintain.
+
+==============================================================================
+COMPATIBILITY                                              *ddt-compatibility*
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
