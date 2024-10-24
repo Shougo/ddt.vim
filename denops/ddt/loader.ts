@@ -1,8 +1,4 @@
-import type {
-  BaseParams,
-  DdtExtType,
-  UiName,
-} from "./types.ts";
+import type { BaseParams, DdtExtType, UiName } from "./types.ts";
 import type { BaseUi } from "./base/ui.ts";
 import type { Denops } from "jsr:@denops/std@~7.2.0";
 import { isDenoCacheIssueError } from "./utils.ts";

@@ -1,9 +1,4 @@
-import type {
-  BaseParams,
-  Context,
-  DdtOptions,
-  UiOptions,
-} from "../types.ts";
+import type { BaseParams, Context, DdtOptions, UiOptions } from "../types.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.2.0";
 

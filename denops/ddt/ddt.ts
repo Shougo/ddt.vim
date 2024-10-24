@@ -1,5 +1,4 @@
-import type {
-} from "./types.ts";
+import type {} from "./types.ts";
 
 export class Ddt {
   constructor() {
