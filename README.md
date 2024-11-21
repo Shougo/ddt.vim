@@ -1,6 +1,6 @@
 # ddt.vim
 
-> Dark Deno Terminal interface for Vim/NeoVim
+> Dark Deno Terminal interface for Vim/Neovim
 
 If you don't want to configure plugins, you don't have to use the plugin. It
 does not work with zero configuration. You can use other plugins.
@@ -28,7 +28,7 @@ see "FAQ" section in [help](doc/ddt.txt).
 
 ## Install
 
-**Note:** ddt.vim requires NeoVim (0.10.0+ and of course, **latest** is
+**Note:** ddt.vim requires Neovim (0.10.0+ and of course, **latest** is
 recommended) or Vim 9.0.1276. See [requirements](#requirements) if you aren't
 sure whether you have this.
 

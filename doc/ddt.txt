@@ -1,4 +1,4 @@
-*ddt.txt*	Dark Deno Terminal interface for Vim/NeoVim
+*ddt.txt*	Dark Deno Terminal interface for Vim/Neovim
 
 Author: Shougo <Shougo.Matsu at gmail.com>
 License: MIT license
@@ -28,7 +28,7 @@ does not work with zero configuration. You can use other plugins.
 ==============================================================================
 INSTALL                                                          *ddt-install*
 
-NOTE: ddt.vim requires NeoVim (0.10.0+) or Vim 9.0.1276+ (latest is
+NOTE: ddt.vim requires Neovim (0.10.0+) or Vim 9.0.1276+ (latest is
 recommended).
 
 Please install both Deno 1.45+ and "denops.vim" v7.0+.
@@ -75,7 +75,7 @@ FAQ 3:                                                             |ddt-faq-3|
                                                                    *ddt-faq-1*
 Q: How to donate money to you?
 
-A: I have started github sponsorship to spend more time for Vim/NeoVim
+A: I have started github sponsorship to spend more time for Vim/Neovim
 plugins.  You can donate money to help me!
 
    https://github.com/sponsors/Shougo
@@ -84,7 +84,7 @@ plugins.  You can donate money to help me!
 Q: What means "dark powered"?
 
 A: I think text editor is everything in the world. I want to do everything in
-Vim(NeoVim) like Emacs. It is not allowed by |design-not| in Vim. It is not
+Vim(Neovim) like Emacs. It is not allowed by |design-not| in Vim. It is not
 the light way to use Vim. So I have defined it as the dark way. I am the dark
 Vimmer. My plugins are dark powered.
 
@@ -92,7 +92,7 @@ Vimmer. My plugins are dark powered.
 Q: Why ddt.vim uses Deno?
 
 A: Deno is asynchronous and faster than Vim script and it can be used in both
-Vim and NeoVim.  The features are what I desired.
+Vim and Neovim.  The features are what I desired.
 I have created some plugins by TypeScript.  The development is very fun and
 easy to maintain.
 
