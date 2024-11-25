@@ -28,7 +28,7 @@ does not work with zero configuration. You can use other plugins.
 ==============================================================================
 INSTALL                                                          *ddt-install*
 
-NOTE: ddt.vim requires Neovim (0.10.0+) or Vim 9.0.1276+ (latest is
+NOTE: ddt.vim requires Vim 9.1.0448+ or Neovim 0.10.0+ (latest is
 recommended).
 
 Please install both Deno 1.45+ and "denops.vim" v7.0+.

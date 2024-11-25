@@ -28,9 +28,8 @@ see "FAQ" section in [help](doc/ddt.txt).
 
 ## Install
 
-**Note:** ddt.vim requires Neovim (0.10.0+ and of course, **latest** is
-recommended) or Vim 9.0.1276. See [requirements](#requirements) if you aren't
-sure whether you have this.
+**Note:** ddt.vim requires Vim 9.1.0448 or Neovim 0.10.0+. See
+[requirements](#requirements) if you aren't sure whether you have this.
 
 ### Requirements
 
