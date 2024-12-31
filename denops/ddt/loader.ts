@@ -1,4 +1,4 @@
-import type { BaseParams, DdtExtType, UiName } from "./types.ts";
+import type { BaseParams, DdtExtType } from "./types.ts";
 import type { BaseUi } from "./base/ui.ts";
 import type { Denops } from "jsr:@denops/std@~7.4.0";
 import { isDenoCacheIssueError } from "./utils.ts";
@@ -17,9 +17,12 @@ type Mod = {
   path: string;
 };
 
+type Ext = {
+  ui: Record<string, BaseUi<BaseParams>>;
+};
+
 export class Loader {
-  #extensions: Record<string, Extension> = {};
-  #mods: Record<DdtExtType, Record<string, Mod>> = {
+  #exts: Ext = {
     ui: {},
   };
   #checkPaths: Record<string, boolean> = {};
@@ -78,29 +81,25 @@ export class Loader {
     });
   }
 
-  getUi(index: string, name: string): BaseUi<BaseParams> | null {
-    const mod = this.#mods.ui[name];
-    if (!mod) {
-      return null;
-    }
-
-    return this.#getExtension(index).getUi(mod, name);
+  registerExtension(type: "ui", name: string, ext: BaseUi<BaseParams>): void;
+  registerExtension(
+    type: DdtExtType,
+    name: string,
+    ext:
+      | BaseUi<BaseParams>,
+  ) {
+    ext.name = name;
+    this.#exts[type][name] = ext;
   }
 
-  #getExtension(index: string): Extension {
-    if (!this.#extensions[index]) {
-      this.#extensions[index] = new Extension();
-    }
-
-    return this.#extensions[index];
+  getUi(name: string): BaseUi<BaseParams> | null {
+    return this.#exts.ui[name];
   }
 
   async #register(type: DdtExtType, path: string) {
     if (path in this.#checkPaths) {
       return;
     }
-
-    const typeMods = this.#mods[type];
 
     const name = parse(path).name;
 
@@ -109,23 +108,22 @@ export class Loader {
       path,
     };
 
-    typeMods[name] = mod;
+    const typeExt = this.#exts[type];
+    let add;
+    switch (type) {
+      case "ui":
+        add = (name: string) => {
+          const ext = new mod.mod.Ui();
+          ext.name = name;
+          ext.path = mod.path;
+          typeExt[name] = ext;
+        };
+        break;
+    }
+
+    add(name);
 
     this.#checkPaths[path] = true;
-  }
-}
-
-class Extension {
-  #uis: Record<UiName, BaseUi<BaseParams>> = {};
-
-  getUi(mod: Mod, name: string): BaseUi<BaseParams> {
-    if (!this.#uis[name]) {
-      const obj = new mod.mod.Ui();
-      obj.name = name;
-      obj.path = mod.path;
-      this.#uis[obj.name] = obj;
-    }
-    return this.#uis[name];
   }
 }
 

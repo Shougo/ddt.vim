@@ -1,6 +1,10 @@
 import type {} from "./types.ts";
+import type { Loader } from "./loader.ts";
 
 export class Ddt {
-  constructor() {
+  #loader: Loader;
+
+  constructor(loader: Loader) {
+    this.#loader = loader;
   }
 }
