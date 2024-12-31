@@ -1,10 +1,10 @@
 import type { BaseParams, DdtExtType, UiName } from "./types.ts";
 import type { BaseUi } from "./base/ui.ts";
-import type { Denops } from "jsr:@denops/std@~7.2.0";
+import type { Denops } from "jsr:@denops/std@~7.4.0";
 import { isDenoCacheIssueError } from "./utils.ts";
 
-import * as fn from "jsr:@denops/std@~7.2.0/function";
-import * as op from "jsr:@denops/std@~7.2.0/option";
+import * as fn from "jsr:@denops/std@~7.4.0/function";
+import * as op from "jsr:@denops/std@~7.4.0/option";
 
 import { basename } from "jsr:@std/path@~1.0.2/basename";
 import { parse } from "jsr:@std/path@~1.0.2/parse";

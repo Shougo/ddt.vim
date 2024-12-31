@@ -1,6 +1,6 @@
 import type { BaseParams, Context, DdtOptions, UiOptions } from "../types.ts";
 
-import type { Denops } from "jsr:@denops/std@~7.2.0";
+import type { Denops } from "jsr:@denops/std@~7.4.0";
 
 type BaseUiArguments<Params extends BaseParams> = {
   denops: Denops;
