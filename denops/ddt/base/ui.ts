@@ -1,6 +1,11 @@
-import type { BaseParams, Context, DdtOptions, UiOptions } from "../types.ts";
+import type { BaseParams, Context, DdtOptions, UiActionCallback, UiOptions } from "../types.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.4.0";
+
+export type UiActions<Params extends BaseParams> = Record<
+  string,
+  UiActionCallback<Params>
+>;
 
 type BaseUiArguments<Params extends BaseParams> = {
   denops: Denops;
@@ -24,6 +29,8 @@ export abstract class BaseUi<Params extends BaseParams> {
   abstract params(): Params;
 
   redraw(_args: RedrawArguments<Params>): void | Promise<void> {}
+
+  abstract actions: UiActions<Params>;
 }
 
 export function defaultUiOptions(): UiOptions {
