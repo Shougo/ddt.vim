@@ -1,11 +1,22 @@
-import type { BaseParams, Context, DdtOptions, UiActionCallback, UiOptions } from "../types.ts";
+import type {
+  ActionName,
+  BaseParams,
+  Context,
+  DdtOptions,
+  UiActionCallback,
+  UiOptions,
+} from "../types.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.4.0";
 
-export type UiActions<Params extends BaseParams> = Record<
-  string,
-  UiActionCallback<Params>
->;
+export type UiAction<Params extends BaseParams, ReturnType = unknown> = {
+  description: string;
+  callback: UiActionCallback<Params, ReturnType>;
+};
+
+export type UiActions<Params extends BaseParams> = {
+  [K in ActionName]: UiAction<Params, unknown>;
+};
 
 type BaseUiArguments<Params extends BaseParams> = {
   denops: Denops;

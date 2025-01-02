@@ -1,12 +1,14 @@
 import type { Denops } from "jsr:@denops/std@~7.4.0";
 
 export type UiName = string;
+export type ActionName = string;
 
 export type DdtExtType = "ui";
 
-export type UiActionCallback<Params extends BaseParams> = (
-  args: UiActionArguments<Params>,
-) => ActionFlags | Promise<ActionFlags>;
+export type UiActionCallback<Params extends BaseParams, ReturnType = unknown> =
+  (
+    args: UiActionArguments<Params>,
+  ) => Promise<ReturnType> | ReturnType;
 
 export type Context = {
   // TODO: remove placeholder

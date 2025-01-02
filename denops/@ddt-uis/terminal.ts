@@ -10,8 +10,7 @@ export class Ui extends BaseUi<Params> {
   }): void | Promise<void> {
   }
 
-  override actions: UiActions<Params> = {
-  }
+  override actions: UiActions<Params> = {};
 
   override params(): Params {
     return {};

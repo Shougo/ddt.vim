@@ -85,8 +85,7 @@ export class Loader {
   registerExtension(
     type: DdtExtType,
     name: string,
-    ext:
-      | BaseUi<BaseParams>,
+    ext: BaseUi<BaseParams>,
   ) {
     ext.name = name;
     this.#exts[type][name] = ext;

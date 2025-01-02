@@ -21,6 +21,5 @@ export const main: Entrypoint = (denops: Denops) => {
 
     return ddts[name];
   };
-  denops.dispatcher = {
-  };
+  denops.dispatcher = {};
 };
