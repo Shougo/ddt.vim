@@ -2,7 +2,28 @@ import { BaseParams, BaseUi, DdtOptions, UiActions } from "../ddt/base/ui.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.4.0";
 
-export type Params = Record<string, never>;
+export type Params = {
+  autoCd: boolean;
+  command: string[];
+  cwd: string;
+  edit: boolean;
+  editFiletype: string;
+  editWinHeight: number;
+  externalHistoryPath: string;
+  extra_term_options: Record<string, unknown>;
+  floatingBorder: string;
+  internalHistoryPath: string;
+  nvimServer: string;
+  promptPattern: string;
+  shellHistoryMax: number;
+  split: string;
+  startInsert: boolean;
+  toggle: boolean;
+  winCol: number;
+  winHeight: number;
+  winRow: number;
+  winWidth: number;
+};
 
 export class Ui extends BaseUi<Params> {
   override redraw(args: {
@@ -104,6 +125,30 @@ export class Ui extends BaseUi<Params> {
   };
 
   override params(): Params {
-    return {};
+    return {
+      autoCd: true,
+      command: [],
+      cwd: "",
+      edit: false,
+      editFiletype: "",
+      editWinHeight: 1,
+      externalHistoryPath: "",
+      extra_term_options: {
+        curwin: true,
+        term_kill: "kill",
+      },
+      floatingBorder: "",
+      internalHistoryPath: "",
+      nvimServer: "",
+      promptPattern: "",
+      shellHistoryMax: 500,
+      split: "",
+      startInsert: false,
+      toggle: false,
+      winCol: 50,
+      winHeight: 15,
+      winRow: 20,
+      winWidth: 80,
+    };
   }
 }
