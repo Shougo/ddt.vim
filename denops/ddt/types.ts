@@ -15,10 +15,24 @@ export type Context = {
   placeholder?: unknown;
 };
 
+export interface ContextBuilder {
+  get(denops: Denops, options: UserOptions): Promise<[Context, DdtOptions]>;
+  getGlobal(): Partial<DdtOptions>;
+  getLocal(): Record<string, Partial<DdtOptions>>;
+  setGlobal(options: Partial<DdtOptions>): void;
+  setLocal(name: string, options: Partial<DdtOptions>): void;
+  patchGlobal(options: Partial<DdtOptions>): void;
+  patchLocal(name: string, options: Partial<DdtOptions>): void;
+}
+
 export type DdtOptions = {
-  // TODO: remove placeholder
-  placeholder?: unknown;
+  name: string;
+  ui: string;
+  uiOptions: Record<UiName, Partial<UiOptions>>;
+  uiParams: Record<UiName, Partial<BaseParams>>;
 };
+
+export type UserOptions = Record<string, unknown>;
 
 export type BaseParams = Record<string, unknown>;
 

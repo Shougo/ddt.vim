@@ -26,6 +26,12 @@ type BaseUiArguments<Params extends BaseParams> = {
   uiParams: Params;
 };
 
+export type OnInitArguments<Params extends BaseParams> = {
+  denops: Denops;
+  uiOptions: UiOptions;
+  uiParams: Params;
+};
+
 export type RedrawArguments<Params extends BaseParams> = BaseUiArguments<
   Params
 >;
@@ -39,6 +45,7 @@ export abstract class BaseUi<Params extends BaseParams> {
 
   abstract params(): Params;
 
+  onInit(_args: OnInitArguments<Params>): void | Promise<void> {}
   redraw(_args: RedrawArguments<Params>): void | Promise<void> {}
 
   abstract actions: UiActions<Params>;
