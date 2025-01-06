@@ -39,8 +39,7 @@ export function foldMerge<T>(
 }
 
 export function defaultContext(): Context {
-  return {
-  };
+  return {};
 }
 
 export function defaultDdtOptions(): DdtOptions {
@@ -173,8 +172,7 @@ export class ContextBuilderImpl implements ContextBuilder {
     await this.validate(denops, "options", userOptions, defaultDdtOptions());
 
     return [
-      {
-      },
+      {},
       userOptions,
     ];
   }

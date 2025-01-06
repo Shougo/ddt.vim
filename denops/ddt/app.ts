@@ -2,12 +2,12 @@ import type {
   BaseParams,
   DdtExtType,
   DdtOptions,
+  UserOptions,
 } from "./types.ts";
-import {
-  ContextBuilderImpl,
-} from "./context.ts";
+import { ContextBuilderImpl } from "./context.ts";
 import { Ddt } from "./ddt.ts";
 import { Loader } from "./loader.ts";
+import { BaseUi } from "./base/ui.ts";
 
 import type { Denops, Entrypoint } from "jsr:@denops/std@~7.4.0";
 import { is } from "jsr:@core/unknownutil@~4.3.0/is";
@@ -91,6 +91,18 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     getLocal(): Promise<Partial<DdtOptions>> {
       return Promise.resolve(contextBuilder.getLocal());
+    },
+    async start(arg1: unknown): Promise<void> {
+      //const startTime = Date.now();
+
+      const userOptions = ensure(arg1, is.Record) as UserOptions;
+      const [context, options] = await contextBuilder.get(denops, userOptions);
+
+      const ddt = getDdt(options.name);
+
+      await ddt.start(denops, context, options, userOptions);
+
+      //console.log(`${Date.now() - startTime} ms`);
     },
   };
 };

@@ -1,8 +1,4 @@
-import {
-  type BaseParams,
-  type DdtOptions,
-  type UiOptions,
-} from "./types.ts";
+import { type BaseParams, type DdtOptions, type UiOptions } from "./types.ts";
 import {
   defaultDummy,
   foldMerge,
@@ -94,4 +90,3 @@ async function checkUiOnInit(
     await printError(denops, `ui: ${ui.name} "onInit()" failed`, e);
   }
 }
-
