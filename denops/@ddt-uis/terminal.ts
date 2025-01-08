@@ -83,7 +83,7 @@ export class Ui extends BaseUi<Params> {
           return;
         }
 
-        await this.#searchPrompt(
+        await searchPrompt(
           args.denops,
           args.uiParams.promptPattern,
           "Wn",
@@ -114,7 +114,7 @@ export class Ui extends BaseUi<Params> {
           return;
         }
 
-        await this.#searchPrompt(
+        await searchPrompt(
           args.denops,
           args.uiParams.promptPattern,
           "bWn",
@@ -229,7 +229,7 @@ export class Ui extends BaseUi<Params> {
       if (params.startInsert) {
         await denops.cmd("startinsert");
       } else {
-        await this.#stopInsert(denops);
+        await stopInsert(denops);
       }
     } else {
       // In Vim8, must be insert mode to redraw
@@ -239,15 +239,6 @@ export class Ui extends BaseUi<Params> {
     await this.#initOptions(denops, options);
 
     await vars.b.set(denops, "ddt_ui_name", options.name);
-  }
-
-  async #stopInsert(denops: Denops) {
-    if (denops.meta.host === "nvim") {
-      await denops.cmd("stopinsert");
-    } else {
-      await denops.cmd("sleep 50m");
-      await fn.feedkeys(denops, "\\<C-\\>\\<C-n>", "n");
-    }
   }
 
   async #winId(denops: Denops): Promise<number> {
@@ -286,25 +277,38 @@ export class Ui extends BaseUi<Params> {
       await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
     });
   }
+}
 
-  async #searchPrompt(denops: Denops, promptPattern: string, flags: string) {
-    const currentCol = await fn.col(denops, ".");
-    await fn.cursor(denops, 0, 1);
-    const pattern = `^\\%(${promptPattern}\\m\\).\\?`;
-    const pos = await fn.searchpos(denops, pattern, flags) as number[];
-    if (pos[0] != 0) {
-      const col = await fn.matchend(
-        denops,
-        await fn.getline(denops, pos[0]),
-        pattern,
-      );
-      await fn.cursor(
-        denops,
-        pos[0],
-        col,
-      );
-    } else {
-      await fn.cursor(denops, 0, currentCol);
-    }
+async function stopInsert(denops: Denops) {
+  if (denops.meta.host === "nvim") {
+    await denops.cmd("stopinsert");
+  } else {
+    await denops.cmd("sleep 50m");
+    await fn.feedkeys(denops, "\\<C-\\>\\<C-n>", "n");
+  }
+}
+
+async function searchPrompt(
+  denops: Denops,
+  promptPattern: string,
+  flags: string,
+) {
+  const currentCol = await fn.col(denops, ".");
+  await fn.cursor(denops, 0, 1);
+  const pattern = `^\\%(${promptPattern}\\m\\).\\?`;
+  const pos = await fn.searchpos(denops, pattern, flags) as number[];
+  if (pos[0] != 0) {
+    const col = await fn.matchend(
+      denops,
+      await fn.getline(denops, pos[0]),
+      pattern,
+    );
+    await fn.cursor(
+      denops,
+      pos[0],
+      col,
+    );
+  } else {
+    await fn.cursor(denops, 0, currentCol);
   }
 }
