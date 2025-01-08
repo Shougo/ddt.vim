@@ -1,4 +1,10 @@
-import { type BaseParams, type DdtOptions, type UiOptions } from "./types.ts";
+import {
+  ActionFlags,
+  type BaseParams,
+  type Context,
+  type DdtOptions,
+  type UiOptions,
+} from "./types.ts";
 import {
   defaultDummy,
   foldMerge,
@@ -66,6 +72,65 @@ function uiArgs<
     options.uiParams[ui.name],
   ]);
   return [o, p];
+}
+
+export async function uiAction(
+  denops: Denops,
+  loader: Loader,
+  context: Context,
+  options: DdtOptions,
+  actionName: string,
+  actionParams: BaseParams,
+): Promise<
+  [
+    BaseUi<BaseParams> | undefined,
+    UiOptions,
+    BaseParams,
+    ActionFlags,
+  ]
+> {
+  // Quit current UI
+  const [ui, uiOptions, uiParams] = await getUi(
+    denops,
+    loader,
+    options,
+  );
+  if (!ui) {
+    return [undefined, uiOptions, uiParams, ActionFlags.None];
+  }
+
+  const action = uiOptions.actions[actionName] ??
+    ui.actions[actionName].callback;
+  if (!action) {
+    await printError(denops, `Not found UI action: ${actionName}`);
+    return [undefined, uiOptions, uiParams, ActionFlags.None];
+  }
+
+  let ret;
+  if (typeof action === "string") {
+    ret = await denops.call(
+      "denops#callback#call",
+      action,
+      {
+        context,
+        options,
+        uiOptions,
+        uiParams,
+        actionParams,
+      },
+    ) as ActionFlags;
+  } else {
+    ret = await action({
+      denops,
+      context,
+      options,
+      uiOptions,
+      uiParams,
+      actionParams,
+    });
+  }
+
+  return [ui, uiOptions, uiParams, ret];
 }
 
 async function checkUiOnInit(

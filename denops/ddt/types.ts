@@ -36,9 +36,10 @@ export type UserOptions = Record<string, unknown>;
 
 export type BaseParams = Record<string, unknown>;
 
+export type UiAction = string | UiActionCallback<BaseParams, ActionFlags>;
+
 export type UiOptions = {
-  // TODO: remove placeholder
-  placeholder?: unknown;
+  actions: Record<ActionName, UiAction>;
 };
 
 export type UiActionArguments<Params extends BaseParams> = {

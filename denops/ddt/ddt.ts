@@ -1,4 +1,4 @@
-import type { Context, DdtOptions, UserOptions } from "./types.ts";
+import type { BaseParams, Context, DdtOptions, UserOptions } from "./types.ts";
 import type { Loader } from "./loader.ts";
 import {
   defaultContext,
@@ -6,9 +6,10 @@ import {
   foldMerge,
   mergeDdtOptions,
 } from "./context.ts";
-import { getUi } from "./ext.ts";
+import { getUi, uiAction } from "./ext.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.4.0";
+import * as fn from "jsr:@denops/std@~7.4.0/function";
 
 export class Ddt {
   #loader: Loader;
@@ -48,10 +49,37 @@ export class Ddt {
     });
   }
 
+  async uiAction(
+    denops: Denops,
+    actionName: string,
+    actionParams: BaseParams,
+  ): Promise<void> {
+    if (await fn.getcmdwintype(denops) !== "") {
+      // Skip when Command line window
+      return;
+    }
+
+    const [ui, _uiOptions, _uiParams, _ret] = await uiAction(
+      denops,
+      this.#loader,
+      this.#context,
+      this.#options,
+      actionName,
+      actionParams,
+    );
+    if (!ui) {
+      return;
+    }
+  }
+
   updateOptions(userOptions: UserOptions) {
     this.#options = foldMerge(mergeDdtOptions, defaultDdtOptions, [
       this.#options,
       userOptions,
     ]);
+  }
+
+  getOptions(): DdtOptions {
+    return this.#options;
   }
 }

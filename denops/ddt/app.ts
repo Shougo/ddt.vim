@@ -104,5 +104,19 @@ export const main: Entrypoint = (denops: Denops) => {
 
       //console.log(`${Date.now() - startTime} ms`);
     },
+    async uiAction(
+      arg1: unknown,
+      arg2: unknown,
+      arg3: unknown,
+    ): Promise<void> {
+      const name = ensure(arg1, is.String) as string;
+      const actionName = ensure(arg2, is.String) as string;
+      const params = ensure(arg3, is.Record) as BaseParams;
+
+      const ddt = getDdt(name);
+      if (ddt.getOptions().ui !== "") {
+        await ddt.uiAction(denops, actionName, params);
+      }
+    },
   };
 };

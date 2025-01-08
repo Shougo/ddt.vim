@@ -52,5 +52,7 @@ export abstract class BaseUi<Params extends BaseParams> {
 }
 
 export function defaultUiOptions(): UiOptions {
-  return {};
+  return {
+    actions: {},
+  };
 }

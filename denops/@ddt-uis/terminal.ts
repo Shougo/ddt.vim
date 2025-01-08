@@ -70,11 +70,24 @@ export class Ui extends BaseUi<Params> {
     },
     nextPrompt: {
       description: "Move to next prompt from cursor",
-      callback: async (_args: {
+      callback: async (args: {
         denops: Denops;
         options: DdtOptions;
+        uiParams: Params;
         actionParams: BaseParams;
       }) => {
+        if (
+          args.uiParams.promptPattern === "" ||
+          await fn.bufnr(args.denops, "%") != this.#bufNr
+        ) {
+          return;
+        }
+
+        await this.#searchPrompt(
+          args.denops,
+          args.uiParams.promptPattern,
+          "Wn",
+        );
       },
     },
     pastePrompt: {
@@ -88,11 +101,24 @@ export class Ui extends BaseUi<Params> {
     },
     previousPrompt: {
       description: "Move to previous prompt from cursor",
-      callback: async (_args: {
+      callback: async (args: {
         denops: Denops;
         options: DdtOptions;
+        uiParams: Params;
         actionParams: BaseParams;
       }) => {
+        if (
+          args.uiParams.promptPattern === "" ||
+          await fn.bufnr(args.denops, "%") != this.#bufNr
+        ) {
+          return;
+        }
+
+        await this.#searchPrompt(
+          args.denops,
+          args.uiParams.promptPattern,
+          "bWn",
+        );
       },
     },
     quit: {
@@ -124,11 +150,12 @@ export class Ui extends BaseUi<Params> {
     },
     startInsert: {
       description: "Start insert mode",
-      callback: async (_args: {
+      callback: async (args: {
         denops: Denops;
         options: DdtOptions;
         actionParams: BaseParams;
       }) => {
+        await args.denops.cmd("startinsert");
       },
     },
     startInsertFirst: {
@@ -210,6 +237,8 @@ export class Ui extends BaseUi<Params> {
     }
 
     await this.#initOptions(denops, options);
+
+    await vars.b.set(denops, "ddt_ui_name", options.name);
   }
 
   async #stopInsert(denops: Denops) {
@@ -256,5 +285,26 @@ export class Ui extends BaseUi<Params> {
       await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
       await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
     });
+  }
+
+  async #searchPrompt(denops: Denops, promptPattern: string, flags: string) {
+    const currentCol = await fn.col(denops, ".");
+    await fn.cursor(denops, 0, 1);
+    const pattern = `^\\%(${promptPattern}\\m\\).\\?`;
+    const pos = await fn.searchpos(denops, pattern, flags) as number[];
+    if (pos[0] != 0) {
+      const col = await fn.matchend(
+        denops,
+        await fn.getline(denops, pos[0]),
+        pattern,
+      );
+      await fn.cursor(
+        denops,
+        pos[0],
+        col,
+      );
+    } else {
+      await fn.cursor(denops, 0, currentCol);
+    }
   }
 }
