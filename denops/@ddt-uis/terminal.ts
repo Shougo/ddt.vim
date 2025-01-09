@@ -5,6 +5,11 @@ import type { Denops } from "jsr:@denops/std@~7.4.0";
 import * as fn from "jsr:@denops/std@~7.4.0/function";
 import * as vars from "jsr:@denops/std@~7.4.0/variable";
 import { batch } from "jsr:@denops/std@~7.4.0/batch";
+import {
+  type RawString,
+  rawString,
+  useEval,
+} from "jsr:@denops/std@~7.4.0/eval";
 
 export type Params = {
   autoCd: boolean;
@@ -29,6 +34,10 @@ export type Params = {
   winWidth: number;
 };
 
+type CdParams = {
+  directory: string;
+};
+
 export class Ui extends BaseUi<Params> {
   #bufNr = -1;
   #jobid = -1;
@@ -50,6 +59,40 @@ export class Ui extends BaseUi<Params> {
   }
 
   override actions: UiActions<Params> = {
+    cd: {
+      description: "Change current directory",
+      callback: async (args: {
+        denops: Denops;
+        options: DdtOptions;
+        actionParams: BaseParams;
+      }) => {
+        if (await fn.bufnr(args.denops, "%") != this.#bufNr) {
+          return;
+        }
+
+        const params = args.actionParams as CdParams;
+
+        const stat = await safeStat(params.directory);
+        if (!stat || !stat.isDirectory) {
+          return;
+        }
+
+        await fn.chdir(args.denops, params.directory);
+
+        const quote = await fn.has(args.denops, "win32") ? '"' : "'";
+        const cleanup = await fn.has(args.denops, "win32")
+          ? ""
+          : rawString`\<C-u>`;
+        await jobSendString(
+          args.denops,
+          this.#bufNr,
+          this.#jobid,
+          rawString`${cleanup}cd ${quote}${params.directory}${quote}\<CR>`,
+        );
+
+        await termRedraw(args.denops, this.#bufNr);
+      },
+    },
     executeLine: {
       description: "Execute the command line",
       callback: async (_args: {
@@ -195,11 +238,13 @@ export class Ui extends BaseUi<Params> {
   }
 
   async #switchBuffer() {
+    // TODO
   }
 
   async #newBuffer(denops: Denops, options: DdtOptions, params: Params) {
     const cwd = params.cwd === "" ? await fn.getcwd(denops) : params.cwd;
-    if (!await fn.isdirectory(denops, cwd)) {
+    const stat = await safeStat(cwd);
+    if (!stat || !stat.isDirectory) {
       // TODO: Create the directory.
     }
 
@@ -239,6 +284,9 @@ export class Ui extends BaseUi<Params> {
     await this.#initOptions(denops, options);
 
     await vars.b.set(denops, "ddt_ui_name", options.name);
+    await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
+
+    await vars.b.set(denops, "ddt_ui_terminal_directory", cwd);
   }
 
   async #winId(denops: Denops): Promise<number> {
@@ -271,21 +319,22 @@ export class Ui extends BaseUi<Params> {
 
       await fn.setbufvar(denops, this.#bufNr, "&bufhidden", "hide");
       await fn.setbufvar(denops, this.#bufNr, "&swapfile", 0);
-
-      // set filetype twice to load after/ftplugin in Vim8
-      await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
-      await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
     });
+
+    // NOTE: setfiletype must be the last
+    await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
   }
 }
 
 async function stopInsert(denops: Denops) {
-  if (denops.meta.host === "nvim") {
-    await denops.cmd("stopinsert");
-  } else {
-    await denops.cmd("sleep 50m");
-    await fn.feedkeys(denops, "\\<C-\\>\\<C-n>", "n");
-  }
+  await useEval(denops, async (denops: Denops) => {
+    if (denops.meta.host === "nvim") {
+      await denops.cmd("stopinsert");
+    } else {
+      await denops.cmd("sleep 50m");
+      await fn.feedkeys(denops, rawString`\<C-\>\<C-n>`, "n");
+    }
+  });
 }
 
 async function searchPrompt(
@@ -312,3 +361,70 @@ async function searchPrompt(
     await fn.cursor(denops, 0, currentCol);
   }
 }
+
+async function jobSendString(
+  denops: Denops,
+  bufNr: number,
+  jobid: number,
+  keys: RawString,
+) {
+  await useEval(denops, async (denops: Denops) => {
+    if (denops.meta.host === "nvim") {
+      console.log(keys);
+      await denops.call("chansend", jobid, keys);
+    } else {
+      await denops.call("term_sendkeys", bufNr, keys);
+      await termRedraw(denops, bufNr);
+      await denops.call("term_wait", bufNr);
+    }
+  });
+}
+
+async function termRedraw(
+  denops: Denops,
+  bufNr: number,
+) {
+  if (denops.meta.host === "nvim") {
+    await denops.cmd("redraw");
+    return;
+  }
+
+  // NOTE: In Vim8, auto redraw does not work!
+  const ids = await fn.win_findbuf(denops, bufNr);
+  if (ids.length === 0) {
+    return;
+  }
+
+  const prevWinId = await fn.win_getid(denops);
+
+  await fn.win_gotoid(denops, ids[0]);
+
+  // Goto insert mode
+  await denops.cmd("redraw");
+  await denops.cmd("normal! A");
+
+  // Go back to normal mode
+  await stopInsert(denops);
+
+  await fn.win_gotoid(denops, prevWinId);
+}
+
+const safeStat = async (path: string): Promise<Deno.FileInfo | null> => {
+  // NOTE: Deno.stat() may be failed
+  try {
+    const stat = await Deno.lstat(path);
+    if (stat.isSymlink) {
+      try {
+        const stat = await Deno.stat(path);
+        stat.isSymlink = true;
+        return stat;
+      } catch (_: unknown) {
+        // Ignore stat exception
+      }
+    }
+    return stat;
+  } catch (_: unknown) {
+    // Ignore stat exception
+  }
+  return null;
+};
