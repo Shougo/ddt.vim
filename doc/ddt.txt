@@ -10,6 +10,8 @@ Install			|ddt-install|
 Interface		|ddt-interface|
   Options		  |ddt-options|
   Functions		  |ddt-functions|
+  Custom Functions	  |ddt-custom-functions|
+  UI Functions		  |ddt-ui-functions|
 ddt Sources		|ddt-ddu-sources|
 Examples		|ddt-examples|
 FAQ			|ddt-faq|
@@ -46,13 +48,65 @@ OPTIONS                                                          *ddt-options*
 ------------------------------------------------------------------------------
 FUNCTIONS                                                      *ddt-functions*
 
+                                                                 *ddt#start()*
+ddt#start([{options}])
+		Creates a new Ddt.
+		NOTE: It can be called by "start" dispatcher in TypeScript.
+		NOTE: It must be called after |DenopsReady|.
+
+		Refer to |ddt-options| about {options}.  If you skip a value,
+		it uses the default value.
+
+CUSTOM FUNCTIONS                                        *ddt-custom-functions*
+
+                                                    *ddt#custom#load_config()*
+ddt#custom#load_config({path})
+		Load TypeScript configuration from {path} file.
+		NOTE: {path} must be full path.
+		NOTE: The loading is asynchronous.
+
+                                                   *ddt#custom#patch_global()*
+ddt#custom#patch_global({option-name}, {value})
+ddt#custom#patch_global({dict})
+		Set {option-name} option to {value}.
+		If {dict} is available, the key is {option-name} and the value
+		is {value}. See |ddt-options| for available {option-name}.
+
+                                                    *ddt#custom#patch_local()*
+ddt#custom#patch_local({ddu-name}, {option-name}, {value})
+ddt#custom#patch_local({ddu-name}, {dict})
+		Set local options for specific |ddt-option-name|.
+		The arguments are the same as for |ddt#custom#patch_global()|.
+
+                                                     *ddt#custom#set_global()*
+ddt#custom#set_global({dict})
+		Overwrites all options to {dict}.
+		The key is {option-name} and the value is {value}. See
+		|ddt-options| for available {option-name}.
+
+                                                      *ddt#custom#set_local()*
+ddt#custom#set_local({ddu-name}, {dict})
+		Set local options for specific |ddt-option-name|.
+		The arguments are the same as for |ddt#custom#set_global()|.
+
+UI FUNCTIONS                                                *ddu-ui-functions*
+
+                                                             *ddt#ui_action()*
+ddu#ui_action({name}, {action}[, {params}])
+		Do the {action} action in current UI synchronously.
+
+		{name} is specified ddt name(|ddt-option-name|).
+
+		{params} is action params.
+		NOTE: You must not call it in |autocmd|.
+
 
 ==============================================================================
 DDU SOURCES                                                  *ddt-ddu-sources*
 
-                                                          *ddt-ddu-source-ddt*
-ddt
-		Gather ddt tabs.
+                                                      *ddt-ddu-source-ddt_tab*
+ddt_tab
+		Gather ddt from tabs.
 
 ==============================================================================
 EXAMPLES                                                        *ddt-examples*
