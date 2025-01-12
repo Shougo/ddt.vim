@@ -14,6 +14,9 @@ Interface		|ddt-interface|
   UI Functions		  |ddt-ui-functions|
 ddt Sources		|ddt-ddu-sources|
 Examples		|ddt-examples|
+UIs			|ddt-uis|
+  UI option	          |ddt-ui-options|
+  UI params	          |ddt-ui-params|
 FAQ			|ddt-faq|
 Compatibility		|ddt-compatibility|
 
@@ -44,6 +47,43 @@ INTERFACE                                                      *ddt-interface*
 ------------------------------------------------------------------------------
 OPTIONS                                                          *ddt-options*
 
+                                                             *ddt-option-name*
+name			(string)
+		Specify the name.
+
+		Default: "default"
+
+                                                               *ddt-option-ui*
+ui			(string | dictionary)
+		Specify UI name or elements which are formatted as:
+>
+		#{
+		    name: {ui-name},
+		    options: {ui-options},
+		    params: {ui-params},
+		}
+<
+		If it is empty string, it is ignored.
+		NOTE: You must set the option in the first.
+
+		Default: ""
+
+                                                        *ddt-option-uiOptions*
+uiOptions		(dictionary)
+		It is a dictionary that maps UI names to its options.
+		The options with the name "_" is used as the options for all
+		names.
+		See also |ddt-ui-options|.
+
+		Default: {}
+
+                                                         *ddt-option-uiParams*
+uiParams		(dictionary)
+		It is a dictionary that maps UI names to its parameters.
+		See also |ddt-ui-params|.
+
+		Default: {}
+
 
 ------------------------------------------------------------------------------
 FUNCTIONS                                                      *ddt-functions*
@@ -73,8 +113,8 @@ ddt#custom#patch_global({dict})
 		is {value}. See |ddt-options| for available {option-name}.
 
                                                     *ddt#custom#patch_local()*
-ddt#custom#patch_local({ddu-name}, {option-name}, {value})
-ddt#custom#patch_local({ddu-name}, {dict})
+ddt#custom#patch_local({ddt-name}, {option-name}, {value})
+ddt#custom#patch_local({ddt-name}, {dict})
 		Set local options for specific |ddt-option-name|.
 		The arguments are the same as for |ddt#custom#patch_global()|.
 
@@ -85,11 +125,11 @@ ddt#custom#set_global({dict})
 		|ddt-options| for available {option-name}.
 
                                                       *ddt#custom#set_local()*
-ddt#custom#set_local({ddu-name}, {dict})
+ddt#custom#set_local({ddt-name}, {dict})
 		Set local options for specific |ddt-option-name|.
 		The arguments are the same as for |ddt#custom#set_global()|.
 
-UI FUNCTIONS                                                *ddu-ui-functions*
+UI FUNCTIONS                                                *ddt-ui-functions*
 
                                                              *ddt#ui_action()*
 ddu#ui_action({name}, {action}[, {params}])
@@ -112,6 +152,33 @@ ddt_tab
 EXAMPLES                                                        *ddt-examples*
 >
 <
+
+==============================================================================
+UIS                                                                  *ddt-uis*
+
+The UIs are used to display items.
+
+NOTE: The UIs are not bundled in ddt.vim.  You need to install them
+to use ddu.vim.  Please search them by https://github.com/topics/ddt-ui
+
+
+------------------------------------------------------------------------------
+UI OPTIONS                                                    *ddt-ui-options*
+
+NOTE: The UIs cannot set default options.  If they need to specify the
+recommended configuration, you should write it in the documentation instead.
+
+                                                       *ddt-ui-option-actions*
+actions			(Record<string, function>)
+		Overwrites UI actions.
+
+
+------------------------------------------------------------------------------
+UI PARAMS                                                      *ddt-ui-params*
+
+These are the parameters that each UI can have.  Please read the UI
+documentation.
+
 
 ==============================================================================
 FAQ                                                                  *ddt-faq*
