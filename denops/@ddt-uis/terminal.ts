@@ -12,7 +12,6 @@ import {
 } from "jsr:@denops/std@~7.4.0/eval";
 
 export type Params = {
-  autoCd: boolean;
   command: string[];
   cwd: string;
   edit: boolean;
@@ -36,6 +35,10 @@ export type Params = {
 
 type CdParams = {
   directory: string;
+};
+
+type SendParams = {
+  str: string;
 };
 
 export class Ui extends BaseUi<Params> {
@@ -104,17 +107,8 @@ export class Ui extends BaseUi<Params> {
       }) => {
       },
     },
-    edit: {
-      description: "Open the edit buffer",
-      callback: async (_args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
-      },
-    },
     nextPrompt: {
-      description: "Move to next prompt from cursor",
+      description: "Move to the next prompt from cursor",
       callback: async (args: {
         denops: Denops;
         options: DdtOptions;
@@ -145,7 +139,7 @@ export class Ui extends BaseUi<Params> {
       },
     },
     previousPrompt: {
-      description: "Move to previous prompt from cursor",
+      description: "Move to the previous prompt from cursor",
       callback: async (args: {
         denops: Denops;
         options: DdtOptions;
@@ -173,6 +167,23 @@ export class Ui extends BaseUi<Params> {
         options: DdtOptions;
         actionParams: BaseParams;
       }) => {
+      },
+    },
+    send: {
+      description: "Send the string to terminal",
+      callback: async (args: {
+        denops: Denops;
+        options: DdtOptions;
+        actionParams: BaseParams;
+      }) => {
+        const params = args.actionParams as SendParams;
+
+        await jobSendString(
+          args.denops,
+          this.#bufNr,
+          this.#jobid,
+          rawString`${params.str}\<CR>`,
+        );
       },
     },
     startAppend: {
@@ -216,7 +227,6 @@ export class Ui extends BaseUi<Params> {
 
   override params(): Params {
     return {
-      autoCd: true,
       command: [],
       cwd: "",
       edit: false,

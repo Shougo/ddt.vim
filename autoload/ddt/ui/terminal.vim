@@ -1,11 +1,11 @@
 function ddt#ui#terminal#kill_editor() abort
-  if !'t:deol#_prev_deol'->exists()
+  if !'g:ddt_ui_terminal_winid'->exists()
     return
   endif
 
   bdelete
 
-  call win_gotoid(g:deol#_prev_deol)
+  call win_gotoid(g:ddt_ui_terminal_winid)
 endfunction
 
 function ddt#ui#terminal#_set_editor(nvim_server) abort
