@@ -11,6 +11,7 @@ import * as fn from "jsr:@denops/std@~7.4.0/function";
 import * as vars from "jsr:@denops/std@~7.4.0/variable";
 
 export type ActionData = {
+  cwd: string;
   tabNr: number;
   existsDdt: boolean;
 };
@@ -41,8 +42,48 @@ export class Kind extends BaseKind<Params> {
     new: async (args: { denops: Denops; items: DduItem[] }) => {
       for (const item of args.items) {
         const action = item?.action as ActionData;
+        const cwd = action.cwd.length === 0
+          ? await fn.getcwd(args.denops)
+          : action.cwd;
 
-        await args.denops.cmd(`tabnext ${action.tabNr} | tabnew`);
+        const newCwd = await fn.input(
+          args.denops,
+          "New cwd: ",
+          cwd,
+          "dir",
+        );
+        await args.denops.cmd("redraw");
+        if (newCwd.length === 0 || newCwd === cwd) {
+          continue;
+        }
+
+        // Note: Deno.stat() may be failed
+        try {
+          const fileInfo = await Deno.stat(newCwd);
+
+          if (fileInfo.isFile) {
+            await printError(
+              args.denops,
+              `${newCwd} is not directory.`,
+            );
+            continue;
+          }
+        } catch (_e: unknown) {
+          const result = await fn.confirm(
+            args.denops,
+            `${newCwd} is not directory.  Create?`,
+            "&Yes\n&No\n&Cancel",
+          );
+          if (result != 1) {
+            continue;
+          }
+
+          await fn.mkdir(args.denops, newCwd, "p");
+        }
+
+        await args.denops.cmd(
+          `tabnext ${action.tabNr} | tabnew | tcd ${newCwd}`,
+        );
       }
 
       return Promise.resolve(ActionFlags.None);
@@ -80,7 +121,7 @@ export class Kind extends BaseKind<Params> {
           "dir",
         );
         await args.denops.cmd("redraw");
-        if (newCwd.length === 0 || cwd === newCwd) {
+        if (newCwd.length === 0 || newCwd === cwd) {
           continue;
         }
 
