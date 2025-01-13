@@ -49,8 +49,6 @@ export class Ui extends BaseUi<Params> {
     uiOptions: UiOptions;
     uiParams: Params;
   }): Promise<void> {
-    console.log(args);
-
     if (await fn.bufexists(args.denops, this.#bufNr)) {
       await this.#switchBuffer(args.denops);
     } else {
@@ -237,6 +235,12 @@ export class Ui extends BaseUi<Params> {
 
   async #switchBuffer(denops: Denops) {
     await denops.cmd(`buffer ${this.#bufNr}`);
+
+    await vars.g.set(
+      denops,
+      "ddt_ui_terminal_winid",
+      await fn.win_getid(denops),
+    );
   }
 
   async #newBuffer(denops: Denops, options: DdtOptions, params: Params) {
@@ -244,7 +248,20 @@ export class Ui extends BaseUi<Params> {
     const stat = await safeStat(cwd);
     if (!stat || !stat.isDirectory) {
       // TODO: Create the directory.
+      const result = await fn.confirm(
+        denops,
+        `${cwd} is not directory.  Create?`,
+        "&Yes\n&No\n&Cancel",
+      );
+      if (result != 1) {
+        return;
+      }
+
+      await fn.mkdir(denops, cwd, "p");
     }
+
+    // Set $EDITOR
+    await denops.call("ddt#ui#terminal#_set_editor");
 
     if (denops.meta.host === "nvim") {
       // NOTE: ":terminal" replaces current buffer
@@ -285,6 +302,11 @@ export class Ui extends BaseUi<Params> {
     await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
 
     await vars.t.set(denops, "ddt_ui_terminal_directory", cwd);
+    await vars.g.set(
+      denops,
+      "ddt_ui_terminal_winid",
+      await fn.win_getid(denops),
+    );
   }
 
   async #winId(denops: Denops): Promise<number> {
@@ -368,7 +390,6 @@ async function jobSendString(
 ) {
   await useEval(denops, async (denops: Denops) => {
     if (denops.meta.host === "nvim") {
-      console.log(keys);
       await denops.call("chansend", jobid, keys);
     } else {
       await denops.call("term_sendkeys", bufNr, keys);
