@@ -52,7 +52,7 @@ export class Ui extends BaseUi<Params> {
     console.log(args);
 
     if (await fn.bufexists(args.denops, this.#bufNr)) {
-      await this.#switchBuffer();
+      await this.#switchBuffer(args.denops);
     } else {
       await this.#newBuffer(args.denops, args.options, args.uiParams);
     }
@@ -76,8 +76,6 @@ export class Ui extends BaseUi<Params> {
         if (!stat || !stat.isDirectory) {
           return;
         }
-
-        await fn.chdir(args.denops, params.directory);
 
         const quote = await fn.has(args.denops, "win32") ? '"' : "'";
         const cleanup = await fn.has(args.denops, "win32")
@@ -237,8 +235,8 @@ export class Ui extends BaseUi<Params> {
     };
   }
 
-  async #switchBuffer() {
-    // TODO
+  async #switchBuffer(denops: Denops) {
+    await denops.cmd(`buffer ${this.#bufNr}`);
   }
 
   async #newBuffer(denops: Denops, options: DdtOptions, params: Params) {
@@ -286,7 +284,7 @@ export class Ui extends BaseUi<Params> {
     await vars.b.set(denops, "ddt_ui_name", options.name);
     await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
 
-    await vars.b.set(denops, "ddt_ui_terminal_directory", cwd);
+    await vars.t.set(denops, "ddt_ui_terminal_directory", cwd);
   }
 
   async #winId(denops: Denops): Promise<number> {
