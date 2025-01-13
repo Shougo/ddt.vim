@@ -74,6 +74,13 @@ previousPrompt
 quit
 		Quit the window.
 
+                                                 *ddu-ui-terminal-action-send*
+send
+		params:
+			{str}: Target string.
+
+		Send {str} to the process.
+
                                           *ddu-ui-terminal-action-startAppend*
 startAppend
 		Start insert mode and move the cursor to the next column.
