@@ -156,6 +156,7 @@ export class Kind extends BaseKind<Params> {
         await args.denops.cmd(`buffer ${bufNr}`);
 
         await args.denops.call("ddt#ui#do_action", "cd", { directory: newCwd });
+        await args.denops.cmd(`noautocmd tcd ${newCwd}`);
       }
 
       return Promise.resolve(ActionFlags.None);

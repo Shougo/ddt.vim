@@ -87,6 +87,12 @@ export class Ui extends BaseUi<Params> {
         );
 
         await termRedraw(args.denops, this.#bufNr);
+
+        await vars.t.set(
+          args.denops,
+          "ddt_ui_terminal_directory",
+          params.directory,
+        );
       },
     },
     executeLine: {
