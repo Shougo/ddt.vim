@@ -330,7 +330,6 @@ export class Ui extends BaseUi<Params> {
       await fn.setwinvar(denops, winid, "&relativenumber", 0);
       await fn.setwinvar(denops, winid, "&spell", 0);
       await fn.setwinvar(denops, winid, "&wrap", 0);
-      await fn.setwinvar(denops, winid, "&winfixbuf", true);
 
       // NOTE: If smoothscroll is set in neovim, freezed in terminal buffer.
       if (existsSmoothScroll) {
