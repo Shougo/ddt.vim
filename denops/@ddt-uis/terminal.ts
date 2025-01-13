@@ -261,7 +261,7 @@ export class Ui extends BaseUi<Params> {
     }
 
     // Set $EDITOR
-    await denops.call("ddt#ui#terminal#_set_editor");
+    await denops.call("ddt#ui#terminal#_set_editor", params.nvimServer);
 
     if (denops.meta.host === "nvim") {
       // NOTE: ":terminal" replaces current buffer
