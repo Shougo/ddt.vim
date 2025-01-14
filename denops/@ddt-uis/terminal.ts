@@ -1,5 +1,5 @@
-import { BaseParams, DdtOptions, UiOptions } from "../ddt/types.ts";
-import { BaseUi, UiActions } from "../ddt/base/ui.ts";
+import type { BaseParams, DdtOptions, UiOptions } from "../ddt/types.ts";
+import { BaseUi, type UiActions } from "../ddt/base/ui.ts";
 
 import type { Denops } from "jsr:@denops/std@~7.4.0";
 import * as fn from "jsr:@denops/std@~7.4.0/function";
@@ -71,7 +71,7 @@ export class Ui extends BaseUi<Params> {
     }
 
     if (await fn.bufexists(args.denops, this.#bufNr)) {
-      await this.#switchBuffer(args.denops, args.uiParams);
+      await this.#switchBuffer(args.denops, args.uiParams, cwd);
     } else {
       await this.#newBuffer(args.denops, args.options, args.uiParams);
     }
@@ -93,38 +93,33 @@ export class Ui extends BaseUi<Params> {
 
         const params = args.actionParams as CdParams;
 
-        const stat = await safeStat(params.directory);
-        if (!stat || !stat.isDirectory) {
-          return;
-        }
-
-        const quote = await fn.has(args.denops, "win32") ? '"' : "'";
-        const cleanup = await fn.has(args.denops, "win32")
-          ? ""
-          : rawString`\<C-u>`;
-        await jobSendString(
-          args.denops,
-          this.#bufNr,
-          this.#jobid,
-          rawString`${cleanup}cd ${quote}${params.directory}${quote}\<CR>`,
-        );
-
-        await termRedraw(args.denops, this.#bufNr);
-
-        await vars.t.set(
-          args.denops,
-          "ddt_ui_terminal_directory",
-          params.directory,
-        );
+        await this.#cd(args.denops, params.directory);
       },
     },
     executeLine: {
       description: "Execute the command line",
-      callback: async (_args: {
+      callback: async (args: {
         denops: Denops;
         options: DdtOptions;
-        actionParams: BaseParams;
+        uiParams: Params;
       }) => {
+        if (
+          args.uiParams.promptPattern === "" ||
+          await fn.bufnr(args.denops, "%") != this.#bufNr
+        ) {
+          return;
+        }
+
+        const commandLine = await getCommandLine(
+          args.denops,
+          args.uiParams.promptPattern,
+        );
+        await jobSendString(
+          args.denops,
+          this.#bufNr,
+          this.#jobid,
+          rawString`${commandLine}\<CR>`,
+        );
       },
     },
     nextPrompt: {
@@ -151,11 +146,28 @@ export class Ui extends BaseUi<Params> {
     },
     pastePrompt: {
       description: "Paste the history to the command line",
-      callback: async (_args: {
+      callback: async (args: {
         denops: Denops;
         options: DdtOptions;
-        actionParams: BaseParams;
+        uiParams: Params;
       }) => {
+        if (
+          args.uiParams.promptPattern === "" ||
+          await fn.bufnr(args.denops, "%") != this.#bufNr
+        ) {
+          return;
+        }
+
+        const commandLine = await getCommandLine(
+          args.denops,
+          args.uiParams.promptPattern,
+        );
+        await jobSendString(
+          args.denops,
+          this.#bufNr,
+          this.#jobid,
+          rawString`${commandLine}`,
+        );
       },
     },
     previousPrompt: {
@@ -180,15 +192,6 @@ export class Ui extends BaseUi<Params> {
         );
       },
     },
-    quit: {
-      description: "Quit the window",
-      callback: async (_args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
-      },
-    },
     send: {
       description: "Send the string to terminal",
       callback: async (args: {
@@ -204,43 +207,6 @@ export class Ui extends BaseUi<Params> {
           this.#jobid,
           rawString`${params.str}\<CR>`,
         );
-      },
-    },
-    startAppend: {
-      description: "Start insert mode and move the cursor to the next column",
-      callback: async (_args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
-      },
-    },
-    startAppendLast: {
-      description: "Start insert mode and move the cursor to the last column",
-      callback: async (_args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
-      },
-    },
-    startInsert: {
-      description: "Start insert mode",
-      callback: async (args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
-        await args.denops.cmd("startinsert");
-      },
-    },
-    startInsertFirst: {
-      description: "Start insert mode and move the cursor to the first column",
-      callback: async (_args: {
-        denops: Denops;
-        options: DdtOptions;
-        actionParams: BaseParams;
-      }) => {
       },
     },
   };
@@ -269,10 +235,16 @@ export class Ui extends BaseUi<Params> {
     };
   }
 
-  async #switchBuffer(denops: Denops, params: Params) {
+  async #switchBuffer(denops: Denops, params: Params, newCwd: string) {
     await denops.call("ddt#ui#terminal#_split", params);
 
     await denops.cmd(`buffer ${this.#bufNr}`);
+
+    // Check current directory
+    const cwd = await this.#getCwd(denops, params.promptPattern);
+    if (cwd !== "" && newCwd !== cwd) {
+      await this.#cd(denops, newCwd);
+    }
   }
 
   async #newBuffer(denops: Denops, options: DdtOptions, params: Params) {
@@ -364,6 +336,43 @@ export class Ui extends BaseUi<Params> {
       await fn.win_getid(denops),
     );
   }
+
+  async #getCwd(denops: Denops, promptPattern: string): Promise<string> {
+    const commandLine = await getCommandLine(
+      denops,
+      promptPattern,
+      "$",
+    );
+    return await denops.call(
+      "ddt#ui#terminal#_get_cwd",
+      this.#pid,
+      commandLine,
+    ) as string;
+  }
+
+  async #cd(denops: Denops, directory: string) {
+    const stat = await safeStat(directory);
+    if (!stat || !stat.isDirectory) {
+      return;
+    }
+
+    const quote = await fn.has(denops, "win32") ? '"' : "'";
+    const cleanup = await fn.has(denops, "win32") ? "" : rawString`\<C-u>`;
+    await jobSendString(
+      denops,
+      this.#bufNr,
+      this.#jobid,
+      rawString`${cleanup}cd ${quote}${directory}${quote}\<CR>`,
+    );
+
+    await termRedraw(denops, this.#bufNr);
+
+    await vars.t.set(
+      denops,
+      "ddt_ui_terminal_directory",
+      directory,
+    );
+  }
 }
 
 async function stopInsert(denops: Denops) {
@@ -400,6 +409,15 @@ async function searchPrompt(
   } else {
     await fn.cursor(denops, 0, currentCol);
   }
+}
+
+async function getCommandLine(
+  denops: Denops,
+  promptPattern: string,
+  lineNr: string | number = ".",
+) {
+  const currentLine = await fn.getline(denops, lineNr);
+  return await fn.substitute(denops, currentLine, promptPattern, "", "");
 }
 
 async function jobSendString(

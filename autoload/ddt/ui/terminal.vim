@@ -74,3 +74,22 @@ function ddt#ui#terminal#_set_editor(nvim_server) abort
     let $GIT_EDITOR = editor_command
   endif
 endfunction
+
+function ddt#ui#terminal#_get_cwd(pid, cmdline) abort
+  const cwd = printf('/proc/%d/cwd', a:pid)
+  if cwd->isdirectory()
+    " Use proc filesystem.
+    const directory = cwd->resolve()
+  elseif 'lsof'->executable()
+    " Use lsof instead.
+    const directory = ('lsof -a -d cwd -p ' .. a:pid)
+          \ ->system()->matchstr('\f\+\ze\n$')
+  else
+    " Parse from prompt.
+    const directory = a:cmdline
+          \ ->matchstr('\W\%(cd\s\+\)\?\zs\%(\S\|\\\s\)\+$')
+          \ ->expand()
+  endif
+
+  return directory
+endfunction

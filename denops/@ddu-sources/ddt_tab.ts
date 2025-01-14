@@ -1,6 +1,6 @@
-import { type Item } from "jsr:@shougo/ddu-vim@~9.4.0/types";
+import type { Item } from "jsr:@shougo/ddu-vim@~9.4.0/types";
 import { BaseSource } from "jsr:@shougo/ddu-vim@~9.4.0/source";
-import { ActionData } from "../@ddu-kinds/ddt_tab.ts";
+import type { ActionData } from "../@ddu-kinds/ddt_tab.ts";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
 import * as fn from "jsr:@denops/std@~7.4.0/function";

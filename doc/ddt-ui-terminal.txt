@@ -69,32 +69,12 @@ pastePrompt
 previousPrompt
 		Move to the previous prompt from cursor.
 
-                                                 *ddu-ui-terminal-action-quit*
-quit
-		Quit the window.
-
                                                  *ddu-ui-terminal-action-send*
 send
 		params:
 			{str}: Target string.
 
 		Send {str} to the process.
-
-                                          *ddu-ui-terminal-action-startAppend*
-startAppend
-		Start insert mode and move the cursor to the next column.
-
-                                      *ddu-ui-terminal-action-startAppendLast*
-startAppendLast
-		Start insert mode and move the cursor to the last column.
-
-                                          *ddu-ui-terminal-action-startInsert*
-startInsert
-		Start insert mode.
-
-                                     *ddu-ui-terminal-action-startInsertFirst*
-startInsertFirst
-		Start insert mode and move the cursor to the first column.
 
 ------------------------------------------------------------------------------
 PARAMS                                                *ddt-ui-terminal-params*
@@ -173,6 +153,15 @@ winWidth	number
 ==============================================================================
 EXAMPLES                                            *ddt-ui-terminal-examples*
 >vim
+	call ddt#custom#patch_global(#{
+	      \   uiParams: #{
+	      \     terminal: #{
+	      \       command: ['zsh'],
+	      \       promptPattern: has('win32') ? '\f\+>' : '\w*% \?',
+	      \     },
+	      \   },
+	      \ })
+
 	nnoremap <buffer> <C-n>
 	      \ <Cmd>call ddt#ui#do_action('nextPrompt')<CR>
 	nnoremap <buffer> <C-p>

@@ -7,7 +7,7 @@ import type {
 import { ContextBuilderImpl } from "./context.ts";
 import { Ddt } from "./ddt.ts";
 import { Loader } from "./loader.ts";
-import { BaseUi } from "./base/ui.ts";
+import type { BaseUi } from "./base/ui.ts";
 
 import type { Denops, Entrypoint } from "jsr:@denops/std@~7.4.0";
 import { is } from "jsr:@core/unknownutil@~4.3.0/is";
