@@ -23,71 +23,6 @@ export class Kind extends BaseKind<Params> {
     string,
     (args: ActionArguments<Params>) => Promise<ActionFlags>
   > = {
-    switch: async (args: { denops: Denops; items: DduItem[] }) => {
-      for (const item of args.items) {
-        const action = item?.action as ActionData;
-        await args.denops.cmd(`tabnext ${action.tabNr}`);
-
-        if (action.existsDdt) {
-          // Move to ddt buffer
-          const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
-          if (bufNr > 0) {
-            await args.denops.cmd(`buffer ${bufNr}`);
-          }
-        }
-      }
-
-      return Promise.resolve(ActionFlags.None);
-    },
-    new: async (args: { denops: Denops; items: DduItem[] }) => {
-      for (const item of args.items) {
-        const action = item?.action as ActionData;
-        const cwd = action.cwd.length === 0
-          ? await fn.getcwd(args.denops)
-          : action.cwd;
-
-        const newCwd = await fn.input(
-          args.denops,
-          "New cwd: ",
-          cwd,
-          "dir",
-        );
-        await args.denops.cmd("redraw");
-        if (newCwd.length === 0 || newCwd === cwd) {
-          continue;
-        }
-
-        // Note: Deno.stat() may be failed
-        try {
-          const fileInfo = await Deno.stat(newCwd);
-
-          if (fileInfo.isFile) {
-            await printError(
-              args.denops,
-              `${newCwd} is not directory.`,
-            );
-            continue;
-          }
-        } catch (_e: unknown) {
-          const result = await fn.confirm(
-            args.denops,
-            `${newCwd} is not directory.  Create?`,
-            "&Yes\n&No\n&Cancel",
-          );
-          if (result != 1) {
-            continue;
-          }
-
-          await fn.mkdir(args.denops, newCwd, "p");
-        }
-
-        await args.denops.cmd(
-          `tabnext ${action.tabNr} | tabnew | tcd ${newCwd}`,
-        );
-      }
-
-      return Promise.resolve(ActionFlags.None);
-    },
     delete: async (args: { denops: Denops; items: DduItem[] }) => {
       const currentTab = await fn.tabpagenr(args.denops);
       const tabNrs = args.items
@@ -157,6 +92,71 @@ export class Kind extends BaseKind<Params> {
 
         await args.denops.call("ddt#ui#do_action", "cd", { directory: newCwd });
         await args.denops.cmd(`noautocmd tcd ${newCwd}`);
+      }
+
+      return Promise.resolve(ActionFlags.None);
+    },
+    switch: async (args: { denops: Denops; items: DduItem[] }) => {
+      for (const item of args.items) {
+        const action = item?.action as ActionData;
+        await args.denops.cmd(`tabnext ${action.tabNr}`);
+
+        if (action.existsDdt) {
+          // Move to ddt buffer
+          const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
+          if (bufNr > 0) {
+            await args.denops.cmd(`buffer ${bufNr}`);
+          }
+        }
+      }
+
+      return Promise.resolve(ActionFlags.None);
+    },
+    new: async (args: { denops: Denops; items: DduItem[] }) => {
+      for (const item of args.items) {
+        const action = item?.action as ActionData;
+        const cwd = action.cwd.length === 0
+          ? await fn.getcwd(args.denops)
+          : action.cwd;
+
+        const newCwd = await fn.input(
+          args.denops,
+          "New cwd: ",
+          cwd,
+          "dir",
+        );
+        await args.denops.cmd("redraw");
+        if (newCwd.length === 0) {
+          continue;
+        }
+
+        // Note: Deno.stat() may be failed
+        try {
+          const fileInfo = await Deno.stat(newCwd);
+
+          if (fileInfo.isFile) {
+            await printError(
+              args.denops,
+              `${newCwd} is not directory.`,
+            );
+            continue;
+          }
+        } catch (_e: unknown) {
+          const result = await fn.confirm(
+            args.denops,
+            `${newCwd} is not directory.  Create?`,
+            "&Yes\n&No\n&Cancel",
+          );
+          if (result != 1) {
+            continue;
+          }
+
+          await fn.mkdir(args.denops, newCwd, "p");
+        }
+
+        await args.denops.cmd(
+          `tabnext ${action.tabNr} | tabnew | tcd ${newCwd}`,
+        );
       }
 
       return Promise.resolve(ActionFlags.None);
