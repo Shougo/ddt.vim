@@ -107,6 +107,13 @@ export class Kind extends BaseKind<Params> {
           if (bufNr > 0) {
             await args.denops.cmd(`buffer ${bufNr}`);
           }
+
+          await vars.t.set(args.denops, "ddt_ui_last_bufnr", bufNr);
+          await vars.g.set(
+            args.denops,
+            "ddt_ui_terminal_last_winid",
+            await fn.win_getid(args.denops),
+          );
         }
       }
 

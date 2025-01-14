@@ -1,11 +1,11 @@
 function ddt#ui#terminal#kill_editor() abort
-  if !'g:ddt_ui_terminal_winid'->exists()
+  if !'g:ddt_ui_terminal_last_winid'->exists()
     return
   endif
 
   bdelete
 
-  call win_gotoid(g:ddt_ui_terminal_winid)
+  call win_gotoid(g:ddt_ui_terminal_last_winid)
 endfunction
 
 function ddt#ui#terminal#_split(params) abort
