@@ -166,6 +166,10 @@ EXAMPLES                                            *ddt-ui-terminal-examples*
 	      \ <Cmd>call ddt#ui#do_action('nextPrompt')<CR>
 	nnoremap <buffer> <C-p>
 	      \ <Cmd>call ddt#ui#do_action('previousPrompt')<CR>
+	nnoremap <buffer> <C-y>
+	      \ <Cmd>call ddt#ui#do_action('pastePrompt')<CR>
+	nnoremap <buffer> <CR>
+	      \ <Cmd>call ddt#ui#do_action('executeLine')<CR>
 	
 	autocmd MyAutoCmd DirChanged <buffer>
 	      \ call ddt#ui#do_action('cd', #{
