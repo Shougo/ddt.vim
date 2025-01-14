@@ -53,7 +53,7 @@ export class Ui extends BaseUi<Params> {
     uiParams: Params;
   }): Promise<void> {
     if (await fn.bufexists(args.denops, this.#bufNr)) {
-      await this.#switchBuffer(args.denops);
+      await this.#switchBuffer(args.denops, args.uiParams);
     } else {
       await this.#newBuffer(args.denops, args.options, args.uiParams);
     }
@@ -249,7 +249,9 @@ export class Ui extends BaseUi<Params> {
     };
   }
 
-  async #switchBuffer(denops: Denops) {
+  async #switchBuffer(denops: Denops, params: Params) {
+    await denops.call("ddt#ui#terminal#_split", params);
+
     await denops.cmd(`buffer ${this.#bufNr}`);
 
     await vars.g.set(
@@ -278,6 +280,8 @@ export class Ui extends BaseUi<Params> {
 
     // Set $EDITOR
     await denops.call("ddt#ui#terminal#_set_editor", params.nvimServer);
+
+    await denops.call("ddt#ui#terminal#_split", params);
 
     if (denops.meta.host === "nvim") {
       // NOTE: ":terminal" replaces current buffer

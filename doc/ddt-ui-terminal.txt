@@ -11,7 +11,6 @@ Interface		|ddt-ui-terminal-interface|
   Functions		  |ddt-ui-terminal-functions|
   Actions		  |ddt-ui-terminal-actions|
   Params		  |ddt-ui-terminal-params|
-  Params expression	  |ddt-ui-terminal-params-expression|
 Examples		|ddt-ui-terminal-examples|
 FAQ			|ddt-ui-terminal-faq|
 Compatibility		|ddt-ui-terminal-compatibility|
@@ -120,6 +119,19 @@ promptPattern	string
 		Sets the pattern which matches the shell prompt.
 		NOTE: The right prompt is not supported.
 
+                                                 *ddt-ui-terminal-param-split*
+split
+		Specify the split direction.
+
+		"": No split
+		"floating": Use Neovim floating window feature
+		"vertical": Split buffer vertically
+		"farleft": Split buffer far left, like |CTRL-W_H|
+		"farright": Split buffer far right, like |CTRL-W_L|
+		otherwise: Split buffer horizontally
+
+		Default: ""
+
                                            *ddt-ui-terminal-param-startInsert*
 startInsert	boolean
 		Start the insert mode.
@@ -129,42 +141,34 @@ startInsert	boolean
 		Default: v:true
 
                                                 *ddt-ui-terminal-param-winCol*
-winCol		(number | string)
+winCol		number
 		Set the column position of the window if
 		|ddt-ui-terminal-param-split| is "floating".
 
-		Default: "(&columns - eval(uiParams.winWidth)) / 2"
+		Default: 50
 
                                              *ddt-ui-terminal-param-winHeight*
-winHeight	(number | string)
+winHeight	number
 		Set the height of the window if |ddt-ui-terminal-param-split|
 		is "horizontal".
-		If |ddt-ui-terminal-param-split| is "floating",
-		set the height of the floating window.
-		NOTE: If |ddt-ui-terminal-param-split| is "horizontal", the
-		value must be less than `&lines - 2`.
 
-		Default: 20
+		Default: 15
 
                                                 *ddt-ui-terminal-param-winRow*
-winRow		(number | string)
+winRow		number
 		Set the row position of the window if
 		|ddt-ui-terminal-param-split| is "floating".
 
-		Default: "&lines / 2 - 10"
+		Default: 20
 
                                               *ddt-ui-terminal-param-winWidth*
-winWidth	(number | string)
+winWidth	number
 		Set the width of the window if |ddt-ui-terminal-param-split|
 		is "vertical".
 		If |ddt-ui-terminal-param-split| is "floating", set the width
 		of the floating window.
 
-		Default: "&columns / 2"
-
-------------------------------------------------------------------------------
-PARAMS EXPRESSION                          *ddt-ui-terminal-params-expression*
-
+		Default: 80
 
 ==============================================================================
 EXAMPLES                                            *ddt-ui-terminal-examples*

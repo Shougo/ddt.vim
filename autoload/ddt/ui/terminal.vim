@@ -8,6 +8,38 @@ function ddt#ui#terminal#kill_editor() abort
   call win_gotoid(g:ddt_ui_terminal_winid)
 endfunction
 
+function ddt#ui#terminal#_split(params) abort
+  if a:params.split ==# ''
+    return
+  endif
+
+  if a:params.split ==# 'floating' && '*nvim_open_win'->exists()
+    call nvim_open_win(bufnr('%'), v:true, #{
+          \   relative: 'editor',
+          \   row: a:params.winRow->str2nr(),
+          \   col: a:params.winCol->str2nr(),
+          \   width: a:params.winWidth->str2nr(),
+          \   height: a:params.winHeight->str2nr(),
+          \   border: a:params.floatingBorder,
+          \ })
+  elseif a:params.split ==# 'vertical'
+    vsplit
+    execute 'vertical resize' a:params.winWidth->str2nr()
+  elseif a:params.split ==# 'farleft'
+    vsplit
+    wincmd H
+    execute 'vertical resize' a:params.winWidth->str2nr()
+  elseif a:params.split ==# 'farright'
+    vsplit
+    wincmd L
+    execute 'vertical resize' a:params.winWidth->str2nr()
+  else
+    split
+    execute 'resize' a:params.winHeight->str2nr()
+  endif
+endfunction
+
+
 function ddt#ui#terminal#_set_editor(nvim_server) abort
   " Set $EDITOR.
   " NOTE: --remote-tab-wait-silent is not implemented yet in neovim.
