@@ -52,11 +52,31 @@ export class Ui extends BaseUi<Params> {
     uiOptions: UiOptions;
     uiParams: Params;
   }): Promise<void> {
+    const cwd = args.uiParams.cwd === ""
+      ? await fn.getcwd(args.denops)
+      : args.uiParams.cwd;
+    const stat = await safeStat(cwd);
+    if (!stat || !stat.isDirectory) {
+      // TODO: Create the directory.
+      const result = await fn.confirm(
+        args.denops,
+        `${cwd} is not directory.  Create?`,
+        "&Yes\n&No\n&Cancel",
+      );
+      if (result != 1) {
+        return;
+      }
+
+      await fn.mkdir(args.denops, cwd, "p");
+    }
+
     if (await fn.bufexists(args.denops, this.#bufNr)) {
       await this.#switchBuffer(args.denops, args.uiParams);
     } else {
       await this.#newBuffer(args.denops, args.options, args.uiParams);
     }
+
+    await this.#initVariables(args.denops, cwd);
   }
 
   override actions: UiActions<Params> = {
@@ -253,31 +273,9 @@ export class Ui extends BaseUi<Params> {
     await denops.call("ddt#ui#terminal#_split", params);
 
     await denops.cmd(`buffer ${this.#bufNr}`);
-
-    await vars.g.set(
-      denops,
-      "ddt_ui_terminal_winid",
-      await fn.win_getid(denops),
-    );
   }
 
   async #newBuffer(denops: Denops, options: DdtOptions, params: Params) {
-    const cwd = params.cwd === "" ? await fn.getcwd(denops) : params.cwd;
-    const stat = await safeStat(cwd);
-    if (!stat || !stat.isDirectory) {
-      // TODO: Create the directory.
-      const result = await fn.confirm(
-        denops,
-        `${cwd} is not directory.  Create?`,
-        "&Yes\n&No\n&Cancel",
-      );
-      if (result != 1) {
-        return;
-      }
-
-      await fn.mkdir(denops, cwd, "p");
-    }
-
     // Set $EDITOR
     await denops.call("ddt#ui#terminal#_set_editor", params.nvimServer);
 
@@ -319,14 +317,6 @@ export class Ui extends BaseUi<Params> {
     await this.#initOptions(denops, options);
 
     await vars.b.set(denops, "ddt_ui_name", options.name);
-    await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
-
-    await vars.t.set(denops, "ddt_ui_terminal_directory", cwd);
-    await vars.g.set(
-      denops,
-      "ddt_ui_terminal_winid",
-      await fn.win_getid(denops),
-    );
   }
 
   async #winId(denops: Denops): Promise<number> {
@@ -362,6 +352,17 @@ export class Ui extends BaseUi<Params> {
 
     // NOTE: setfiletype must be the last
     await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
+  }
+
+  async #initVariables(denops: Denops, cwd: string) {
+    await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
+
+    await vars.t.set(denops, "ddt_ui_terminal_directory", cwd);
+    await vars.g.set(
+      denops,
+      "ddt_ui_terminal_winid",
+      await fn.win_getid(denops),
+    );
   }
 }
 
