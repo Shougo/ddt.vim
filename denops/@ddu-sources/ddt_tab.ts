@@ -31,7 +31,6 @@ export class Source extends BaseSource<Params> {
                 action: {
                   cwd,
                   tabNr: tabNr,
-                  existsDdt: cwd.length === 0,
                 },
               };
             },

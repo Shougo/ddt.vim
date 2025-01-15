@@ -13,7 +13,6 @@ import * as vars from "jsr:@denops/std@~7.4.0/variable";
 export type ActionData = {
   cwd: string;
   tabNr: number;
-  existsDdt: boolean;
 };
 
 type Params = Record<string, never>;
@@ -101,20 +100,20 @@ export class Kind extends BaseKind<Params> {
         const action = item?.action as ActionData;
         await args.denops.cmd(`tabnext ${action.tabNr}`);
 
-        if (action.existsDdt) {
-          // Move to ddt buffer
-          const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
-          if (bufNr > 0) {
-            await args.denops.cmd(`buffer ${bufNr}`);
-          }
-
-          await vars.t.set(args.denops, "ddt_ui_last_bufnr", bufNr);
-          await vars.g.set(
-            args.denops,
-            "ddt_ui_terminal_last_winid",
-            await fn.win_getid(args.denops),
-          );
+        // Move to ddt buffer
+        const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
+        if (bufNr <= 0) {
+          continue;
         }
+
+        await args.denops.cmd(`buffer ${bufNr}`);
+
+        await vars.t.set(args.denops, "ddt_ui_last_bufnr", bufNr);
+        await vars.g.set(
+          args.denops,
+          "ddt_ui_terminal_last_winid",
+          await fn.win_getid(args.denops),
+        );
       }
 
       return Promise.resolve(ActionFlags.None);
