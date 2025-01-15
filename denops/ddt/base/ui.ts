@@ -36,6 +36,10 @@ export type RedrawArguments<Params extends BaseParams> = BaseUiArguments<
   Params
 >;
 
+export type GetInputArguments<Params extends BaseParams> = BaseUiArguments<
+  Params
+>;
+
 export abstract class BaseUi<Params extends BaseParams> {
   apiVersion = 1;
 
@@ -47,6 +51,9 @@ export abstract class BaseUi<Params extends BaseParams> {
 
   onInit(_args: OnInitArguments<Params>): void | Promise<void> {}
   redraw(_args: RedrawArguments<Params>): void | Promise<void> {}
+  getInput(_args: GetInputArguments<Params>): string | Promise<string> {
+    return "";
+  }
 
   abstract actions: UiActions<Params>;
 }

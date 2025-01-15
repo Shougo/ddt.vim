@@ -118,5 +118,17 @@ export const main: Entrypoint = (denops: Denops) => {
         await ddt.uiAction(denops, actionName, params);
       }
     },
+    async getInput(
+      arg1: unknown,
+    ): Promise<string> {
+      const name = ensure(arg1, is.String) as string;
+
+      const ddt = getDdt(name);
+      if (ddt.getOptions().ui !== "") {
+        return await ddt.getInput(denops);
+      }
+
+      return "";
+    },
   };
 };

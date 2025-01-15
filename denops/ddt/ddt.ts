@@ -72,6 +72,27 @@ export class Ddt {
     }
   }
 
+  async getInput(
+    denops: Denops,
+  ): Promise<string> {
+    const [ui, uiOptions, uiParams] = await getUi(
+      denops,
+      this.#loader,
+      this.#options,
+    );
+    if (!ui) {
+      return "";
+    }
+
+    return await ui.getInput({
+      denops,
+      context: this.#context,
+      options: this.#options,
+      uiOptions,
+      uiParams,
+    });
+  }
+
   updateOptions(userOptions: UserOptions) {
     this.#options = foldMerge(mergeDdtOptions, defaultDdtOptions, [
       this.#options,

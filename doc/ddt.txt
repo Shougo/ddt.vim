@@ -12,11 +12,13 @@ Interface		|ddt-interface|
   Functions		  |ddt-functions|
   Custom Functions	  |ddt-custom-functions|
   UI Functions		  |ddt-ui-functions|
-ddt Sources		|ddt-ddu-sources|
+Ddu Sources		|ddt-ddu-sources|
 Examples		|ddt-examples|
 UIs			|ddt-uis|
   UI option	          |ddt-ui-options|
   UI params	          |ddt-ui-params|
+Create UI		|ddt-create-ui|
+  UI attributes		  |ddt-ui-attributes|
 FAQ			|ddt-faq|
 Compatibility		|ddt-compatibility|
 
@@ -88,14 +90,31 @@ uiParams		(dictionary)
 ------------------------------------------------------------------------------
 FUNCTIONS                                                      *ddt-functions*
 
+                                                             *ddt#get_input()*
+ddt#get_input({name})
+		Get the command line input from current cursor.
+
+		{name} is specified ddt name(|ddt-option-name|).
+
                                                                  *ddt#start()*
 ddt#start([{options}])
 		Creates a new Ddt.
 		NOTE: It can be called by "start" dispatcher in TypeScript.
 		NOTE: It must be called after |DenopsReady|.
+		NOTE: It does not work in |command-line-window|.
 
 		Refer to |ddt-options| about {options}.  If you skip a value,
 		it uses the default value.
+
+                                                             *ddt#ui_action()*
+ddt#ui_action({name}, {action}[, {params}])
+		Do the {action} action in current UI synchronously.
+
+		{name} is specified ddt name(|ddt-option-name|).
+
+		{params} is action params.
+		NOTE: It does not work in |command-line-window|.
+		NOTE: You must not call it in |autocmd|.
 
 CUSTOM FUNCTIONS                                        *ddt-custom-functions*
 
@@ -132,7 +151,7 @@ ddt#custom#set_local({ddt-name}, {dict})
 UI FUNCTIONS                                                *ddt-ui-functions*
 
                                                              *ddt#ui_action()*
-ddu#ui_action({name}, {action}[, {params}])
+ddt#ui_action({name}, {action}[, {params}])
 		Do the {action} action in current UI synchronously.
 
 		{name} is specified ddt name(|ddt-option-name|).
@@ -159,7 +178,7 @@ UIS                                                                  *ddt-uis*
 The UIs are used to display items.
 
 NOTE: The UIs are not bundled in ddt.vim.  You need to install them
-to use ddu.vim.  Please search them by https://github.com/topics/ddt-ui
+to use ddt.vim.  Please search them by https://github.com/topics/ddt-ui
 
 
 ------------------------------------------------------------------------------
@@ -178,6 +197,37 @@ UI PARAMS                                                      *ddt-ui-params*
 
 These are the parameters that each UI can have.  Please read the UI
 documentation.
+
+
+==============================================================================
+CREATE UI                                                      *ddt-create-ui*
+
+To create UI, you should read other UIs implementation.
+
+The UIs must put under "denops/@ddt-uis/*.ts".
+
+UI class must extend the BaseUi class.
+
+NOTE: It must be written in TypeScript language.
+
+NOTE: If you call Vim functions, it is not asynchronous.
+
+
+------------------------------------------------------------------------------
+UI ATTRIBUTES                                              *ddt-ui-attributes*
+
+                                                    *ddt-ui-attribute-actions*
+actions			(Record<string, function>)	(Required)
+		Defines UI actions.
+		The actions are called from |ddt#ui_action()|.
+
+                                                   *ddu-ui-attribute-getInput*
+getInput		(function)			(Required)
+		Called when get input command line.
+
+                                                     *ddu-ui-attribute-redraw*
+redraw			(function)			(Required)
+		Called when redraw UI.
 
 
 ==============================================================================

@@ -79,6 +79,30 @@ export class Ui extends BaseUi<Params> {
     await this.#initVariables(args.denops, cwd);
   }
 
+  override async getInput(args: {
+    denops: Denops;
+    options: DdtOptions;
+    uiOptions: UiOptions;
+    uiParams: Params;
+  }): Promise<string> {
+    if (
+      args.uiParams.promptPattern === "" ||
+      await fn.bufnr(args.denops, "%") != this.#bufNr
+    ) {
+      return "";
+    }
+
+    const commandLine = await getCommandLine(
+      args.denops,
+      args.uiParams.promptPattern,
+    );
+
+    const col = await fn.col(args.denops, ".");
+    const mode = await fn.mode(args.denops);
+
+    return commandLine.slice(0, mode == "n" ? col - 2 : col - 3);
+  }
+
   override actions: UiActions<Params> = {
     cd: {
       description: "Change current directory",
