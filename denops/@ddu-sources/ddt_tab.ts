@@ -23,7 +23,7 @@ export class Source extends BaseSource<Params> {
               const cwd = await fn.gettabvar(
                 args.denops,
                 tabNr,
-                "ddt_ui_terminal_directory",
+                "ddt_ui_last_directory",
                 "",
               ) as string;
               return {

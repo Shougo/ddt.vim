@@ -76,7 +76,7 @@ export class Ui extends BaseUi<Params> {
       await this.#newBuffer(args.denops, args.options, args.uiParams);
     }
 
-    await this.#initVariables(args.denops, cwd);
+    await this.#initVariables(args.denops, args.options.name, cwd);
   }
 
   override async getInput(args: {
@@ -312,7 +312,6 @@ export class Ui extends BaseUi<Params> {
 
     await this.#initOptions(denops, options);
 
-    await vars.b.set(denops, "ddt_ui_name", options.name);
   }
 
   async #winId(denops: Denops): Promise<number> {
@@ -350,10 +349,13 @@ export class Ui extends BaseUi<Params> {
     await fn.setbufvar(denops, this.#bufNr, "&filetype", "ddt-terminal");
   }
 
-  async #initVariables(denops: Denops, cwd: string) {
-    await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
+  async #initVariables(denops: Denops, name: string, cwd: string) {
+    await vars.b.set(denops, "ddt_ui_name", name);
 
-    await vars.t.set(denops, "ddt_ui_terminal_directory", cwd);
+    await vars.t.set(denops, "ddt_ui_last_bufnr", this.#bufNr);
+    await vars.t.set(denops, "ddt_ui_last_directory", cwd);
+    await vars.t.set(denops, "ddt_ui_terminal_last_name", name);
+
     await vars.g.set(
       denops,
       "ddt_ui_terminal_last_winid",
@@ -393,7 +395,7 @@ export class Ui extends BaseUi<Params> {
 
     await vars.t.set(
       denops,
-      "ddt_ui_terminal_directory",
+      "ddt_ui_last_directory",
       directory,
     );
   }

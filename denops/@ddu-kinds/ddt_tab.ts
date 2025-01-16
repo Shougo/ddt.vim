@@ -40,7 +40,7 @@ export class Kind extends BaseKind<Params> {
         const cwd = await fn.gettabvar(
           args.denops,
           action.tabNr,
-          "ddt_ui_terminal_directory",
+          "ddt_ui_last_directory",
           "",
         ) as string;
 
