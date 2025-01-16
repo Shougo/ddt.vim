@@ -150,8 +150,8 @@ ddt#custom#set_local({ddt-name}, {dict})
 
 UI FUNCTIONS                                                *ddt-ui-functions*
 
-                                                             *ddt#ui_action()*
-ddt#ui_action({name}, {action}[, {params}])
+                                                          *ddt#ui#do_action()*
+ddt#ui#do_action({name}, {action}[, {params}])
 		Do the {action} action in current UI synchronously.
 
 		{name} is specified ddt name(|ddt-option-name|).
