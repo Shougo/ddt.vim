@@ -322,22 +322,26 @@ export class Ui extends BaseUi<Params> {
   async #initOptions(denops: Denops, options: DdtOptions) {
     const winid = await this.#winId(denops);
     const existsSmoothScroll = await fn.exists(denops, "+smoothscroll");
+    const existsStatusColumn = await fn.exists(denops, "+statuscolumn");
 
     await batch(denops, async (denops: Denops) => {
       await fn.setbufvar(denops, this.#bufNr, "ddt_ui_name", options.name);
 
       // Set options
       await fn.setwinvar(denops, winid, "&list", 0);
-      await fn.setwinvar(denops, winid, "&colorcolumn", "");
-      await fn.setwinvar(denops, winid, "&foldcolumn", 0);
       await fn.setwinvar(denops, winid, "&foldenable", 0);
       await fn.setwinvar(denops, winid, "&number", 0);
       await fn.setwinvar(denops, winid, "&relativenumber", 0);
       await fn.setwinvar(denops, winid, "&spell", 0);
       await fn.setwinvar(denops, winid, "&wrap", 0);
-
-      // NOTE: If smoothscroll is set in neovim, freezed in terminal buffer.
+      await fn.setwinvar(denops, winid, "&colorcolumn", "");
+      await fn.setwinvar(denops, winid, "&foldcolumn", 0);
+      await fn.setwinvar(denops, winid, "&signcolumn", "no");
+      if (existsStatusColumn) {
+        await fn.setwinvar(denops, winid, "&statuscolumn", "");
+      }
       if (existsSmoothScroll) {
+        // NOTE: If smoothscroll is set in neovim, freezed in terminal buffer.
         await fn.setwinvar(denops, winid, "&smoothscroll", false);
       }
 
