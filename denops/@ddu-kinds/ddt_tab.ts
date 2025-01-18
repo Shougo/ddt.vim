@@ -106,7 +106,7 @@ export class Kind extends BaseKind<Params> {
 
           await vars.g.set(
             args.denops,
-            "ddt_ui_terminal_last_winid",
+            "ddt_ui_last_winid",
             await fn.win_getid(args.denops),
           );
         }
