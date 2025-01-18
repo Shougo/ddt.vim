@@ -9,7 +9,7 @@
   },
   "publish": {
     "include": [
-      "denops/ddt/**/*.ts",
+      "denops/ddt/**/*.ts"
     ]
   },
   "imports": {

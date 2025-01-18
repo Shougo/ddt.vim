@@ -311,7 +311,6 @@ export class Ui extends BaseUi<Params> {
     }
 
     await this.#initOptions(denops, options);
-
   }
 
   async #winId(denops: Denops): Promise<number> {
