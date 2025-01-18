@@ -221,11 +221,11 @@ actions			(Record<string, function>)	(Required)
 		Defines UI actions.
 		The actions are called from |ddt#ui_action()|.
 
-                                                   *ddu-ui-attribute-getInput*
+                                                   *ddt-ui-attribute-getInput*
 getInput		(function)			(Required)
 		Called when get input command line.
 
-                                                     *ddu-ui-attribute-redraw*
+                                                     *ddt-ui-attribute-redraw*
 redraw			(function)			(Required)
 		Called when redraw UI.
 
