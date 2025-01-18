@@ -2,10 +2,14 @@
   "name": "@shougo/ddt-vim",
   "version": "0.0.0",
   "exports": {
+    "./config": "./denops/ddt/base/config.ts",
+    "./types": "./denops/ddt/types.ts",
+    "./ui": "./denops/ddt/base/ui.ts",
+    "./utils": "./denops/ddt/utils.ts"
   },
   "publish": {
     "include": [
-      "denops/ddt/**/*.ts"
+      "denops/ddt/**/*.ts",
     ]
   },
   "imports": {

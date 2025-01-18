@@ -7,16 +7,21 @@ import type {
 import { ContextBuilderImpl } from "./context.ts";
 import { Ddt } from "./ddt.ts";
 import { Loader } from "./loader.ts";
+import { isDenoCacheIssueError } from "./utils.ts";
 import type { BaseUi } from "./base/ui.ts";
 
 import type { Denops, Entrypoint } from "jsr:@denops/std@~7.4.0";
+
+import { toFileUrl } from "jsr:@std/path@~1.0.2/to-file-url";
 import { is } from "jsr:@core/unknownutil@~4.3.0/is";
 import { ensure } from "jsr:@core/unknownutil@~4.3.0/ensure";
+import { Lock } from "jsr:@core/asyncutil@~1.2.0/lock";
 
 export const main: Entrypoint = (denops: Denops) => {
   const loaders: Record<string, Loader> = {};
   const ddts: Record<string, Ddt> = {};
   const contextBuilder = new ContextBuilderImpl();
+  const lock = new Lock(0);
 
   const getLoader = (name: string) => {
     if (!loaders[name]) {
@@ -91,6 +96,37 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     getLocal(): Promise<Partial<DdtOptions>> {
       return Promise.resolve(contextBuilder.getLocal());
+    },
+    async loadConfig(arg1: unknown): Promise<void> {
+      //const startTime = Date.now();
+      // NOTE: Lock until load finished to prevent execute start() API.
+      await lock.lock(async () => {
+        const path = ensure(arg1, is.String) as string;
+
+        try {
+          // NOTE: Import module with fragment so that reload works properly.
+          // https://github.com/vim-denops/denops.vim/issues/227
+          const mod = await import(
+            `${toFileUrl(path).href}#${performance.now()}`
+          );
+          const obj = new mod.Config();
+          await obj.config({ denops, contextBuilder });
+        } catch (e) {
+          if (isDenoCacheIssueError(e)) {
+            console.warn("*".repeat(80));
+            console.warn(`Deno module cache issue is detected.`);
+            console.warn(
+              `Execute '!deno cache --reload "${path}"' and restart Vim/Neovim.`,
+            );
+            console.warn("*".repeat(80));
+          }
+
+          console.error(`Failed to load file '${path}': ${e}`);
+          throw e;
+        }
+      });
+      //console.log(`${arg1}: ${Date.now() - startTime} ms`);
+      return Promise.resolve();
     },
     async start(arg1: unknown): Promise<void> {
       //const startTime = Date.now();
