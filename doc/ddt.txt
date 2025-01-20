@@ -159,6 +159,10 @@ ddt#ui#do_action({name}, {action}[, {params}])
 		{params} is action params.
 		NOTE: You must not call it in |autocmd|.
 
+                                                        *ddt#ui#kill_editor()*
+ddt#ui#kill_editor()
+		Kill the current buffer and return to the last ddt ui.
+		It is useful to use git editor.
 
 ==============================================================================
 DDU SOURCES                                                  *ddt-ddu-sources*
