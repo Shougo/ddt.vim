@@ -14,7 +14,7 @@ export async function printError(
       return `${v}`;
     }
   }).join("\n");
-  await denops.call("ddu#util#print_error", message);
+  await denops.call("ddt#util#print_error", message);
 }
 
 // See https://github.com/vim-denops/denops.vim/issues/358 for details

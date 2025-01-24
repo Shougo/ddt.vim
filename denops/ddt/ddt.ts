@@ -47,6 +47,9 @@ export class Ddt {
       uiOptions,
       uiParams,
     });
+
+    // Redraw is needed.
+    await denops.cmd("redraw");
   }
 
   async uiAction(
@@ -70,6 +73,9 @@ export class Ddt {
     if (!ui) {
       return;
     }
+
+    // Redraw is needed.
+    await denops.cmd("redraw");
   }
 
   async getInput(
