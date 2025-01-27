@@ -47,7 +47,7 @@ export async function getUi(
   }
 
   const [uiOptions, uiParams] = uiArgs(options, ui);
-  await checkUiOnInit(ui, denops, uiOptions, uiParams);
+  await checkUiOnInit(ui, denops, options, uiOptions, uiParams);
 
   return [ui, uiOptions, uiParams];
 }
@@ -136,6 +136,7 @@ export async function uiAction(
 async function checkUiOnInit(
   ui: BaseUi<BaseParams>,
   denops: Denops,
+  options: DdtOptions,
   uiOptions: UiOptions,
   uiParams: BaseParams,
 ) {
@@ -151,6 +152,9 @@ async function checkUiOnInit(
     });
 
     ui.isInitialized = true;
+
+    // Set $EDITOR
+    await denops.call("ddt#ui#_set_editor", options.nvimServer);
   } catch (e: unknown) {
     await printError(denops, `ui: ${ui.name} "onInit()" failed`, e);
   }

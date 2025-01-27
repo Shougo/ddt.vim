@@ -27,6 +27,7 @@ export interface ContextBuilder {
 
 export type DdtOptions = {
   name: string;
+  nvimServer: string;
   ui: string;
   uiOptions: Record<UiName, Partial<UiOptions>>;
   uiParams: Record<UiName, Partial<BaseParams>>;

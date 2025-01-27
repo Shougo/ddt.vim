@@ -55,6 +55,14 @@ name			(string)
 
 		Default: "default"
 
+                                                       *ddt-option-nvimServer*
+nvimServer
+		The path of Neovim server.  Please see |client-server|.
+		NOTE: It is Neovim only.
+		NOTE: It is not implemented yet.
+
+		Default: ""
+
                                                                *ddt-option-ui*
 ui			(string | dictionary)
 		Specify UI name or elements which are formatted as:
