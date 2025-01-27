@@ -12,5 +12,5 @@ function ddt#ui#kill_editor() abort
 
   call win_gotoid(g:ddt_ui_last_winid)
 
-  redraw
+  redraw!
 endfunction
