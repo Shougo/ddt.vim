@@ -11,5 +11,6 @@ function ddt#ui#kill_editor() abort
   bdelete
 
   call win_gotoid(g:ddt_ui_last_winid)
-endfunction
 
+  redraw
+endfunction
