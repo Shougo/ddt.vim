@@ -12,5 +12,8 @@ function ddt#ui#kill_editor() abort
 
   call win_gotoid(g:ddt_ui_last_winid)
 
-  redraw!
+  if !has('nvim') && &l:buftype =~# 'terminal'
+    " It must be insert mode to redraw in Vim
+    startinsert
+  endif
 endfunction
