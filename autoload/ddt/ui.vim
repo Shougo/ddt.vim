@@ -14,6 +14,6 @@ function ddt#ui#kill_editor() abort
 
   if !has('nvim') && &l:buftype =~# 'terminal'
     " It must be insert mode to redraw in Vim
-    startinsert
+    silent! normal! A
   endif
 endfunction
