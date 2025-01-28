@@ -34,13 +34,15 @@ function ddt#ui#_set_editor(nvim_server) abort
   "  let editor_command =
   "        \ printf('%s --server %s --remote-tab-wait-silent',
   "        \   v:progpath, nvim_server->s:expand())
-  elseif v:progname ==# 'nvim' && 'nvr'->executable()
+  elseif v:progname ==# 'nvim' && 'nvr'->executable() && v:servername !=# ''
     " Use neovim-remote for neovim
-    let editor_command = 'nvr --remote-tab-wait-silent'
+    let editor_command =
+          \ printf('nvr --servername=%s --remote-tab-wait-silent',
+          \   v:servername)
   elseif v:progpath->executable() && has('clientserver') && v:servername !=# ''
     " Use clientserver feature for Vim
     let editor_command =
-          \ printf('%s  --servername=%s --remote-tab-wait-silent',
+          \ printf('%s --servername=%s --remote-tab-wait-silent',
           \   v:progpath, v:servername)
   elseif v:progpath->executable()
     let editor_command = v:progpath
