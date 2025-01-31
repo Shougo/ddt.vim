@@ -159,13 +159,15 @@ ddt#custom#set_local({ddt-name}, {dict})
 UI FUNCTIONS                                                *ddt-ui-functions*
 
                                                           *ddt#ui#do_action()*
-ddt#ui#do_action({name}, {action}[, {params}])
+ddt#ui#do_action({action}[, {params}])
 		Do the {action} action in current UI synchronously.
-
-		{name} is specified ddt name(|ddt-option-name|).
 
 		{params} is action params.
 		NOTE: You must not call it in |autocmd|.
+
+                                                          *ddt#ui#get_input()*
+ddt#ui#get_input()
+		Get the command line input from current cursor.
 
                                                         *ddt#ui#kill_editor()*
 ddt#ui#kill_editor()
@@ -174,6 +176,22 @@ ddt#ui#kill_editor()
 
 ==============================================================================
 DDU SOURCES                                                  *ddt-ddu-sources*
+
+                                            *ddt-ddu-source-ddt_shell_history*
+ddt_shell_history
+		Gather shell history.
+
+                                     *ddt-ddu-source-ddt_shell_history-params*
+
+		limit	(number)
+			The limit of history lines in each history.
+
+			Default: 500
+
+		paths	(string[])
+			History file path list.
+
+			Default: []
 
                                                       *ddt-ddu-source-ddt_tab*
 ddt_tab

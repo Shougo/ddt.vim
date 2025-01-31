@@ -4,7 +4,7 @@ import {
   type DduItem,
 } from "jsr:@shougo/ddu-vim@~9.4.0/types";
 import { BaseKind } from "jsr:@shougo/ddu-vim@~9.4.0/kind";
-import { printError } from "jsr:@shougo/ddu-vim@~9.4.0/utils";
+import { printError, safeStat } from "jsr:@shougo/ddu-vim@~9.4.0/utils";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
 import * as fn from "jsr:@denops/std@~7.4.0/function";
@@ -59,18 +59,17 @@ export class Kind extends BaseKind<Params> {
           continue;
         }
 
-        // Note: Deno.stat() may be failed
-        try {
-          const fileInfo = await Deno.stat(newCwd);
+        const stat = await safeStat(newCwd);
 
-          if (fileInfo.isFile) {
-            await printError(
-              args.denops,
-              `${newCwd} is not directory.`,
-            );
-            continue;
-          }
-        } catch (_e: unknown) {
+        if (stat?.isFile) {
+          await printError(
+            args.denops,
+            `${newCwd} is not directory.`,
+          );
+          continue;
+        }
+
+        if (!stat) {
           const result = await fn.confirm(
             args.denops,
             `${newCwd} is not directory.  Create?`,
