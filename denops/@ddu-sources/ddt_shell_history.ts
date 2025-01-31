@@ -3,8 +3,8 @@ import {
   type Actions,
   type DduItem,
   type Item,
-} from "jsr:@shougo/ddu-vim@~9.4.0/types";
-import { BaseSource } from "jsr:@shougo/ddu-vim@~9.4.0/source";
+} from "jsr:@shougo/ddu-vim@~9.5.0/types";
+import { BaseSource } from "jsr:@shougo/ddu-vim@~9.5.0/source";
 import { safeStat } from "../ddt/utils.ts";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
