@@ -27,7 +27,9 @@ export class Source extends BaseSource<Params> {
                 "",
               ) as string;
               return {
-                word: cwd.length === 0 ? `[no ddt]` : cwd,
+                word: cwd.length === 0
+                  ? `[no ddt] ${await fn.getcwd(args.denops, 0, tabNr)}`
+                  : cwd,
                 action: {
                   cwd,
                   tabNr: tabNr,

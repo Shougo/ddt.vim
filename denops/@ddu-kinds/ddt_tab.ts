@@ -41,12 +41,8 @@ export class Kind extends BaseKind<Params> {
           args.denops,
           action.tabNr,
           "ddt_ui_last_directory",
-          "",
+          await fn.getcwd(args.denops, 0, action.tabNr),
         ) as string;
-
-        if (cwd.length === 0) {
-          continue;
-        }
 
         const newCwd = await fn.input(
           args.denops,
@@ -85,10 +81,14 @@ export class Kind extends BaseKind<Params> {
         await args.denops.cmd(`tabnext ${action.tabNr}`);
 
         // Move to ddt buffer
-        const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr");
-        await args.denops.cmd(`buffer ${bufNr}`);
+        const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
+        if (bufNr > 0) {
+          await args.denops.cmd(`buffer ${bufNr}`);
+          await args.denops.call("ddt#ui#do_action", "cd", {
+            directory: newCwd,
+          });
+        }
 
-        await args.denops.call("ddt#ui#do_action", "cd", { directory: newCwd });
         await args.denops.cmd(`noautocmd tcd ${newCwd}`);
       }
 
