@@ -30,14 +30,14 @@ function ddt#ui#_set_editor(nvim_server) abort
   elseif 'g:edita_loaded'->exists()
     " Use edita instead
     let editor_command = edita#EDITOR()
-  "elseif v:progname ==# 'nvim' && has('nvim-0.7')
-  "      \ && nvim_server->expand()->filereadable()
+  "elseif v:progname ==# 'nvim' && has('nvim-0.11')
+  "      \ && a:nvim_server->expand()->filereadable()
   "  " Use clientserver for neovim
   "  NOTE: --remote-tab-wait-silent is not implemented yet in neovim.
   "  https://github.com/neovim/neovim/pull/18414
   "  let editor_command =
   "        \ printf('%s --server %s --remote-tab-wait-silent',
-  "        \   v:progpath, nvim_server->s:expand())
+  "        \   v:progpath, a:nvim_server->s:expand())
   elseif v:progname ==# 'nvim' && 'nvr'->executable() && v:servername !=# ''
     " Use neovim-remote for neovim
     let editor_command =
