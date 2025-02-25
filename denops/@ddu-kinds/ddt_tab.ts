@@ -108,6 +108,10 @@ export class Kind extends BaseKind<Params> {
             "ddt_ui_last_winid",
             await fn.win_getid(args.denops),
           );
+
+          if (await fn.bufnr(args.denops, "%") === bufNr) {
+            await args.denops.call("ddt#ui#do_action", "redraw");
+          }
         }
       }
 
