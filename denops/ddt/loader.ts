@@ -91,7 +91,14 @@ export class Loader {
     this.#exts[type][name] = ext;
   }
 
-  getUi(name: string): BaseUi<BaseParams> | null {
+  async getUi(
+    denops: Denops,
+    name: string,
+  ): Promise<BaseUi<BaseParams> | null> {
+    if (!this.#exts.ui[name]) {
+      await this.autoload(denops, "ui", name);
+    }
+
     return this.#exts.ui[name];
   }
 

@@ -29,16 +29,22 @@ export async function getUi(
     BaseParams,
   ]
 > {
-  if (!loader.getUi(options.ui)) {
-    const exists = await loader.autoload(denops, "ui", options.ui);
-
-    if (options.ui !== "" && !exists) {
-      await printError(denops, `Not found ui: "${options.ui}"`);
-    }
+  const name = options.ui;
+  if (name.length === 0) {
+    return [
+      undefined,
+      defaultUiOptions(),
+      defaultDummy(),
+    ];
   }
 
-  const ui = loader.getUi(options.ui);
+  const ui = await loader.getUi(denops, name);
   if (!ui) {
+    await printError(
+      denops,
+      `Not found ui: "${name}"`,
+    );
+
     return [
       undefined,
       defaultUiOptions(),
