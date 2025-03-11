@@ -2,13 +2,13 @@ import {
   type ActionArguments,
   ActionFlags,
   type DduItem,
-} from "jsr:@shougo/ddu-vim@~9.5.0/types";
-import { BaseKind } from "jsr:@shougo/ddu-vim@~9.5.0/kind";
-import { printError, safeStat } from "jsr:@shougo/ddu-vim@~9.5.0/utils";
+} from "jsr:@shougo/ddu-vim@~10.1.0/types";
+import { BaseKind } from "jsr:@shougo/ddu-vim@~10.1.0/kind";
+import { printError, safeStat } from "jsr:@shougo/ddu-vim@~10.1.0/utils";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
-import * as fn from "jsr:@denops/std@~7.4.0/function";
-import * as vars from "jsr:@denops/std@~7.4.0/variable";
+import * as fn from "jsr:@denops/std@~7.5.0/function";
+import * as vars from "jsr:@denops/std@~7.5.0/variable";
 
 export type ActionData = {
   cwd: string;

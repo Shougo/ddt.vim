@@ -3,12 +3,12 @@ import {
   type Actions,
   type DduItem,
   type Item,
-} from "jsr:@shougo/ddu-vim@~9.5.0/types";
-import { BaseSource } from "jsr:@shougo/ddu-vim@~9.5.0/source";
+} from "jsr:@shougo/ddu-vim@~10.1.0/types";
+import { BaseSource } from "jsr:@shougo/ddu-vim@~10.1.0/source";
 import { safeStat } from "../ddt/utils.ts";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
-import * as fn from "jsr:@denops/std@~7.4.0/function";
+import * as fn from "jsr:@denops/std@~7.5.0/function";
 
 type Params = {
   limit: number;

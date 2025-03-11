@@ -16,7 +16,7 @@ import type { BaseUi } from "./base/ui.ts";
 import type { Loader } from "./loader.ts";
 import { printError } from "./utils.ts";
 
-import type { Denops } from "jsr:@denops/std@~7.4.0";
+import type { Denops } from "jsr:@denops/std@~7.5.0";
 
 export async function getUi(
   denops: Denops,

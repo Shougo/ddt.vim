@@ -10,7 +10,7 @@ import { Loader } from "./loader.ts";
 import { isDenoCacheIssueError } from "./utils.ts";
 import type { BaseUi } from "./base/ui.ts";
 
-import type { Denops, Entrypoint } from "jsr:@denops/std@~7.4.0";
+import type { Denops, Entrypoint } from "jsr:@denops/std@~7.5.0";
 
 import { toFileUrl } from "jsr:@std/path@~1.0.2/to-file-url";
 import { is } from "jsr:@core/unknownutil@~4.3.0/is";

@@ -1,4 +1,4 @@
-import type { Denops } from "jsr:@denops/std@~7.4.0";
+import type { Denops } from "jsr:@denops/std@~7.5.0";
 
 export type UiName = string;
 export type ActionName = string;
