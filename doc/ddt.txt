@@ -239,15 +239,15 @@ b:ddt_ui_name		(string)
 		|ddt-option-name| in current UI.
 
                                          *ddt-ui-variable-g:ddt_ui_last_winid*
-g:ddt_ui_last_winid		(number)
+g:ddt_ui_last_winid	(number)
 		The last UI window ID.
 
                                          *ddt-ui-variable-t:ddt_ui_last_bufnr*
-t:ddt_ui_last_bufnr		(number)
+t:ddt_ui_last_bufnr	(number)
 		The last UI buffer number in current tab.
 
                                      *ddt-ui-variable-t:ddt_ui_last_directory*
-t:ddt_ui_last_directory		(number)
+t:ddt_ui_last_directory	(number)
 		The last UI current directory in current tab.
 
 
