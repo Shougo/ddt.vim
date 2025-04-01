@@ -2,9 +2,9 @@ import {
   type ActionArguments,
   ActionFlags,
   type DduItem,
-} from "jsr:@shougo/ddu-vim@~10.1.0/types";
-import { BaseKind } from "jsr:@shougo/ddu-vim@~10.1.0/kind";
-import { printError, safeStat } from "jsr:@shougo/ddu-vim@~10.1.0/utils";
+} from "jsr:@shougo/ddu-vim@~10.3.0/types";
+import { BaseKind } from "jsr:@shougo/ddu-vim@~10.3.0/kind";
+import { printError, safeStat } from "jsr:@shougo/ddu-vim@~10.3.0/utils";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
 import * as fn from "jsr:@denops/std@~7.5.0/function";
