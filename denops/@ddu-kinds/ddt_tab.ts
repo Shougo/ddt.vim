@@ -1,6 +1,6 @@
 import {
-  type Actions,
   ActionFlags,
+  type Actions,
   type DduItem,
 } from "jsr:@shougo/ddu-vim@~10.3.0/types";
 import { BaseKind } from "jsr:@shougo/ddu-vim@~10.3.0/kind";
@@ -24,8 +24,8 @@ export class Kind extends BaseKind<Params> {
       callback: async (args: { denops: Denops; items: DduItem[] }) => {
         const currentTab = await fn.tabpagenr(args.denops);
         const tabNrs = args.items
-        .map((item) => (item?.action as ActionData)?.tabNr)
-        .filter((tabNr) => tabNr !== undefined && tabNr != currentTab);
+          .map((item) => (item?.action as ActionData)?.tabNr)
+          .filter((tabNr) => tabNr !== undefined && tabNr != currentTab);
 
         for (const tabNr of tabNrs.sort().reverse()) {
           await args.denops.cmd(`silent! tabclose ${tabNr}`);
