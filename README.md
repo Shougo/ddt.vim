@@ -38,6 +38,11 @@ Please install both Deno 1.45+ and "denops.vim" v7.0+.
 - <https://deno.land/>
 - <https://github.com/vim-denops/denops.vim>
 
+You need to install ddt-ui plugins like this.
+
+- <https://github.com/Shougo/ddt-ui-terminal>
+- <https://github.com/Shougo/ddt-ui-shell>
+
 ### Config example
 
 ```vim
