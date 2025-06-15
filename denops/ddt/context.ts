@@ -44,6 +44,7 @@ export function defaultContext(): Context {
 
 export function defaultDdtOptions(): DdtOptions {
   return {
+    debug: false,
     name: "",
     nvimServer: "",
     ui: "",

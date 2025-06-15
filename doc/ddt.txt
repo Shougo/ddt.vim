@@ -55,6 +55,12 @@ INTERFACE                                                      *ddt-interface*
 ------------------------------------------------------------------------------
 OPTIONS                                                          *ddt-options*
 
+                                                            *ddt-option-debug*
+debug			(boolean)
+		Enable debug mode.
+
+		Default: v:false
+
                                                              *ddt-option-name*
 name			(string)
 		Specify the name.

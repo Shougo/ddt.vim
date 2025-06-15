@@ -26,6 +26,7 @@ export interface ContextBuilder {
 }
 
 export type DdtOptions = {
+  debug: boolean;
   name: string;
   nvimServer: string;
   ui: string;
