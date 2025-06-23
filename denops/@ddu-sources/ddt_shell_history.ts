@@ -8,7 +8,7 @@ import { BaseSource } from "jsr:@shougo/ddu-vim@~10.3.0/source";
 import { safeStat } from "../ddt/utils.ts";
 
 import type { Denops } from "jsr:@denops/core@~7.0.0";
-import * as fn from "jsr:@denops/std@~7.5.0/function";
+import * as fn from "jsr:@denops/std@~7.6.0/function";
 
 type Params = {
   limit: number;
