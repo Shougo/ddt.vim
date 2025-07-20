@@ -10,12 +10,12 @@ import { Loader } from "./loader.ts";
 import { isDenoCacheIssueError } from "./utils.ts";
 import type { BaseUi } from "./base/ui.ts";
 
-import type { Denops, Entrypoint } from "jsr:@denops/std@~7.6.0";
+import type { Denops, Entrypoint } from "@denops/std";
 
-import { toFileUrl } from "jsr:@std/path@~1.1.0/to-file-url";
-import { is } from "jsr:@core/unknownutil@~4.3.0/is";
-import { ensure } from "jsr:@core/unknownutil@~4.3.0/ensure";
-import { Lock } from "jsr:@core/asyncutil@~1.2.0/lock";
+import { toFileUrl } from "@std/path/to-file-url";
+import { is } from "@core/unknownutil/is";
+import { ensure } from "@core/unknownutil/ensure";
+import { Lock } from "@core/asyncutil/lock";
 
 export const main: Entrypoint = (denops: Denops) => {
   const loaders: Record<string, Loader> = {};
