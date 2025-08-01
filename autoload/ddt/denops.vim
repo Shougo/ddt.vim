@@ -12,7 +12,7 @@ function ddt#denops#_request(method, args) abort
   if denops#server#status() !=# 'running'
     " Lazy call request
     execute printf('autocmd User DenopsPluginPost:ddt call '
-          \ .. 's:notify("%s", %s)', a:method, a:args->string())
+          \ .. 'denops#request("ddt", "%s", %s)', a:method, a:args->string())
     return {}
   endif
 
