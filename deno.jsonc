@@ -1,6 +1,7 @@
 {
   "name": "@shougo/ddt-vim",
   "version": "0.0.0",
+  "lock": false,
   "exports": {
     "./config": "./denops/ddt/base/config.ts",
     "./types": "./denops/ddt/types.ts",
