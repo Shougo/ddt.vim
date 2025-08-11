@@ -6,7 +6,7 @@ import {
 import { BaseKind } from "jsr:@shougo/ddu-vim@~10.3.0/kind";
 import { printError, safeStat } from "jsr:@shougo/ddu-vim@~10.3.0/utils";
 
-import type { Denops } from "jsr:@denops/core@~7.0.0";
+import type { Denops } from "jsr:@denops/std@~7.6.0";
 import * as fn from "jsr:@denops/std@~7.6.0/function";
 import * as vars from "jsr:@denops/std@~7.6.0/variable";
 
