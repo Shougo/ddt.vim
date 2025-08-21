@@ -1,24 +1,12 @@
 {
-  "name": "@shougo/ddt-vim",
-  "version": "0.0.0",
   "lock": false,
-  "exports": {
-    "./config": "./denops/ddt/base/config.ts",
-    "./types": "./denops/ddt/types.ts",
-    "./ui": "./denops/ddt/base/ui.ts",
-    "./utils": "./denops/ddt/utils.ts"
-  },
-  "publish": {
-    "include": [
-      "denops/ddt/**/*.ts"
-    ]
-  },
   "tasks": {
     "cache": "deno cache --reload denops/**/*.ts",
     "check": "deno check denops/**/*.ts",
+    "fmt": "deno fmt denops",
     "lint": "deno lint denops",
     "lint-fix": "deno lint --fix denops",
-    "fmt": "deno fmt denops",
+    "publish": "deno publish --dry-run --allow-dirty",
     "test": "deno test -A --doc --parallel --shuffle denops/**/*.ts",
     "update": "deno outdated --recursive",
     "upgrade": "deno outdated --recursive --update"
