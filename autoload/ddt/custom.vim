@@ -20,7 +20,7 @@ function ddt#custom#load_config(path) abort
     return
   endif
 
-  return s:notify('loadConfig', [a:path])
+  return ddt#denops#_request('loadConfig', [a:path])
 endfunction
 
 function s:normalize_key_or_dict(key_or_dict, value) abort
