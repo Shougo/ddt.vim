@@ -36,10 +36,9 @@ does not work with zero configuration. You can use other plugins.
 ==============================================================================
 INSTALL                                                          *ddt-install*
 
-NOTE: ddt.vim requires Vim 9.1.0448+ or Neovim 0.10.0+ (latest is
-recommended).
+NOTE: It requires Vim 9.1.1646+ or Neovim (0.11.0+).
 
-Please install both Deno 1.45+ and "denops.vim" v7.0+.
+Please install both Deno 2.3.0+ and "denops.vim" v8.0+.
 
 https://deno.land/
 https://github.com/vim-denops/denops.vim
@@ -142,7 +141,9 @@ CUSTOM FUNCTIONS                                        *ddt-custom-functions*
 ddt#custom#load_config({path})
 		Load TypeScript configuration from {path} file.
 		NOTE: {path} must be full path.
-		NOTE: The loading is asynchronous.
+		NOTE: The loading is not asynchronous.
+		NOTE: Import maps from "deno.json[c]" or "import_map.json[c]"
+		file in the same directory will also be loaded.
 
                                                    *ddt#custom#patch_global()*
 ddt#custom#patch_global({option-name}, {value})

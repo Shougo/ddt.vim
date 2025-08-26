@@ -12,7 +12,7 @@ function ddt#denops#_request(method, args) abort
   if denops#server#status() !=# 'running'
     " Lazy call request
     execute printf('autocmd User DenopsPluginPost:ddt call '
-          \ .. 's:notify("%s", %s)', a:method, a:args->string())
+          \ .. 'denops#request("ddt", "%s", %s)', a:method, a:args->string())
     return {}
   endif
 
@@ -41,8 +41,8 @@ function s:init() abort
     return
   endif
 
-  if !has('patch-9.1.0448') && !has('nvim-0.10')
-    call ddt#util#_error('ddt.vim requires Vim 9.1.0448+ or Neovim 0.10+.')
+  if !has('patch-9.1.1646') && !has('nvim-0.11')
+    call ddt#util#_error('ddt.vim requires Vim 9.1.1646+ or Neovim 0.11+.')
     return 1
   endif
 
@@ -80,7 +80,7 @@ function s:notify(method, args) abort
   endif
 endfunction
 
-const s:root_dir = '<sfile>:h:h:h'->expand()
+const s:root_dir = '<script>:h:h:h'->expand()
 const s:sep = has('win32') ? '\' : '/'
 function s:register() abort
   call denops#plugin#load(
