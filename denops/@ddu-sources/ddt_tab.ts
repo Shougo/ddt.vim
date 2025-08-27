@@ -1,9 +1,9 @@
-import type { Item } from "jsr:@shougo/ddu-vim@~10.3.0/types";
-import { BaseSource } from "jsr:@shougo/ddu-vim@~10.3.0/source";
+import type { Item } from "@shougo/ddu-vim/types";
+import { BaseSource } from "@shougo/ddu-vim/source";
 import type { ActionData } from "../@ddu-kinds/ddt_tab.ts";
 
-import type { Denops } from "jsr:@denops/std@~7.6.0";
-import * as fn from "jsr:@denops/std@~7.6.0/function";
+import type { Denops } from "@denops/std";
+import * as fn from "@denops/std/function";
 
 type Params = Record<string, never>;
 

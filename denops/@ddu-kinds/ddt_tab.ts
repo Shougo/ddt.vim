@@ -1,14 +1,10 @@
-import {
-  ActionFlags,
-  type Actions,
-  type DduItem,
-} from "jsr:@shougo/ddu-vim@~10.3.0/types";
-import { BaseKind } from "jsr:@shougo/ddu-vim@~10.3.0/kind";
-import { printError, safeStat } from "jsr:@shougo/ddu-vim@~10.3.0/utils";
+import { ActionFlags, type Actions, type DduItem } from "@shougo/ddu-vim/types";
+import { BaseKind } from "@shougo/ddu-vim/kind";
+import { printError, safeStat } from "@shougo/ddu-vim/utils";
 
-import type { Denops } from "jsr:@denops/std@~7.6.0";
-import * as fn from "jsr:@denops/std@~7.6.0/function";
-import * as vars from "jsr:@denops/std@~7.6.0/variable";
+import type { Denops } from "@denops/std";
+import * as fn from "@denops/std/function";
+import * as vars from "@denops/std/variable";
 
 export type ActionData = {
   cwd: string;
