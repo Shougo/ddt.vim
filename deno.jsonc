@@ -13,7 +13,8 @@
   },
   "workspace": [
     "./denops/ddt",
-    "./denops/@ddu-kinds",
-    "./denops/@ddu-sources"
+    "./denops/@ddu-kinds/ddt_tab",
+    "./denops/@ddu-sources/ddt_tab",
+    "./denops/@ddu-sources/ddt_shell_history"
   ]
 }

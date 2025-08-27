@@ -1,6 +1,6 @@
 import type { Item } from "@shougo/ddu-vim/types";
 import { BaseSource } from "@shougo/ddu-vim/source";
-import type { ActionData } from "../@ddu-kinds/ddt_tab.ts";
+import type { ActionData } from "../../@ddu-kinds/ddt_tab/main.ts";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
