@@ -334,5 +334,9 @@ easy to maintain.
 ==============================================================================
 COMPATIBILITY                                              *ddt-compatibility*
 
+2025.08.26
+* Vim 9.1.1646+ or Neovim (0.11.0+) is required.
+* Deno 2.3.0+ and "denops.vim" v8.0+ are required.
+
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
