@@ -1,8 +1,4 @@
-import {
-  ActionFlags,
-  type Actions,
-  type DduItem,
-} from "@shougo/ddu-vim/types";
+import { ActionFlags, type Actions, type DduItem } from "@shougo/ddu-vim/types";
 import { BaseKind } from "@shougo/ddu-vim/kind";
 import { printError, safeStat } from "@shougo/ddu-vim/utils";
 
