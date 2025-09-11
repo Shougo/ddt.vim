@@ -29,9 +29,11 @@ export class Source extends BaseSource<Params> {
         let histories: string[] = [];
         for (const path of args.sourceParams.paths) {
           const expandedPath = await fn.expand(args.denops, path) as string;
-          histories = histories.concat(
-            (await getHistory(expandedPath, args.sourceParams.limit)).reverse(),
-          );
+          histories = [
+            ...histories,
+            ...((await getHistory(expandedPath, args.sourceParams.limit))
+              .reverse()),
+          ];
         }
 
         const items = histories.map((history) => {
