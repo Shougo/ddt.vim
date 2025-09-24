@@ -8,8 +8,8 @@ import {
 import {
   defaultDummy,
   foldMerge,
+  mergeParams,
   mergeUiOptions,
-  mergeUiParams,
 } from "./context.ts";
 import { defaultUiOptions } from "./base/ui.ts";
 import type { BaseUi } from "./base/ui.ts";
@@ -72,7 +72,7 @@ function uiArgs<
       options.uiOptions[ui.name],
     ],
   );
-  const p = foldMerge(mergeUiParams, defaultDummy, [
+  const p = foldMerge(mergeParams, defaultDummy, [
     ui.params(),
     options.uiParams["_"],
     options.uiParams[ui.name],
