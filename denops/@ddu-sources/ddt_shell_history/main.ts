@@ -5,7 +5,7 @@ import {
   type Item,
 } from "@shougo/ddu-vim/types";
 import { BaseSource } from "@shougo/ddu-vim/source";
-import { safeStat } from "../ddt/utils.ts";
+import { safeStat } from "../../ddt/utils.ts";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
