@@ -42,10 +42,10 @@ export const main: Entrypoint = (denops: Denops) => {
       arg2: unknown,
       arg3: unknown,
     ): Promise<void> {
-      const loader = getLoader(ensure(arg1, is.String) as string);
+      const loader = getLoader(ensure(arg1, is.String));
       await loader.registerPath(
         ensure(arg2, is.String) as DdtExtType,
-        ensure(arg3, is.String) as string,
+        ensure(arg3, is.String),
       );
       return Promise.resolve();
     },
@@ -75,7 +75,7 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     setLocal(arg1: unknown, arg2: unknown): Promise<void> {
       const options = ensure(arg1, is.Record) as Partial<DdtOptions>;
-      const name = ensure(arg2, is.String) as string;
+      const name = ensure(arg2, is.String);
       contextBuilder.setLocal(name, options);
       return Promise.resolve();
     },
@@ -86,7 +86,7 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     patchLocal(arg1: unknown, arg2: unknown): Promise<void> {
       const options = ensure(arg1, is.Record) as Partial<DdtOptions>;
-      const name = ensure(arg2, is.String) as string;
+      const name = ensure(arg2, is.String);
       contextBuilder.patchLocal(name, options);
       return Promise.resolve();
     },
@@ -100,7 +100,7 @@ export const main: Entrypoint = (denops: Denops) => {
       //const startTime = Date.now();
       // NOTE: Lock until load finished to prevent execute start() API.
       await lock.lock(async () => {
-        const path = ensure(arg1, is.String) as string;
+        const path = ensure(arg1, is.String);
 
         try {
           const mod = await importPlugin(path);
@@ -141,8 +141,8 @@ export const main: Entrypoint = (denops: Denops) => {
       arg2: unknown,
       arg3: unknown,
     ): Promise<void> {
-      const name = ensure(arg1, is.String) as string;
-      const actionName = ensure(arg2, is.String) as string;
+      const name = ensure(arg1, is.String);
+      const actionName = ensure(arg2, is.String);
       const params = ensure(arg3, is.Record) as BaseParams;
 
       const ddt = getDdt(name);
@@ -153,7 +153,7 @@ export const main: Entrypoint = (denops: Denops) => {
     async getInput(
       arg1: unknown,
     ): Promise<string> {
-      const name = ensure(arg1, is.String) as string;
+      const name = ensure(arg1, is.String);
 
       const ddt = getDdt(name);
       if (ddt.getOptions().ui !== "") {
