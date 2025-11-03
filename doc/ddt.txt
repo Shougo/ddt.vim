@@ -184,7 +184,8 @@ ddt#ui#get_input()
 
                                                         *ddt#ui#kill_editor()*
 ddt#ui#kill_editor()
-		Kill the current buffer and return to the last ddt ui.
+		Kill the current buffer and the current tab and return to the
+		last ddt ui window.
 		It is useful to use git editor.
 
 ==============================================================================
