@@ -10,6 +10,7 @@ import { getUi, uiAction } from "./ext.ts";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
+import * as vars from "@denops/std/variable";
 
 export class Ddt {
   #loader: Loader;
@@ -73,6 +74,12 @@ export class Ddt {
     if (!ui) {
       return;
     }
+
+    await vars.g.set(
+      denops,
+      "ddt_ui_last_winid",
+      await fn.win_getid(denops),
+    );
 
     // Redraw is needed.
     await denops.cmd("redraw");
