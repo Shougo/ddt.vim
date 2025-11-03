@@ -12,13 +12,36 @@ function ddt#ui#kill_editor() abort
     return
   endif
 
-  bdelete
+  const tabpagenr_save = tabpagenr()
+
+  call ddt#ui#buffer_delete(bufnr())
 
   call win_gotoid(g:ddt_ui_last_winid)
+
+  execute 'tabclose' tabpagenr_save
 
   if !has('nvim') && &l:buftype =~# 'terminal'
     " It must be insert mode to redraw in Vim
     silent! normal! A
+  endif
+endfunction
+
+function! ddt#ui#buffer_delete(bufnr) abort
+  if a:bufnr < 0
+    return
+  endif
+
+  const winid = a:bufnr->win_findbuf()->get(0, -1)
+  if winid > 0
+    const winid_save = win_getid()
+    call win_gotoid(winid)
+
+    noautocmd silent enew
+    execute 'silent! bdelete!' a:bufnr
+
+    call win_gotoid(winid_save)
+  else
+    execute 'silent! bdelete!' a:bufnr
   endif
 endfunction
 
