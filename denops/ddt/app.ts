@@ -150,7 +150,7 @@ export const main: Entrypoint = (denops: Denops) => {
         await ddt.uiAction(denops, actionName, params);
       }
     },
-    async getInput(
+    getInput(
       arg1: unknown,
     ): Promise<string> {
       const name = ensure(arg1, is.String);
@@ -160,7 +160,7 @@ export const main: Entrypoint = (denops: Denops) => {
         return ddt.getInput(denops);
       }
 
-      return "";
+      return Promise.resolve("");
     },
   };
 };
