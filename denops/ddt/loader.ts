@@ -193,7 +193,7 @@ async function createPathCache(
   return cache;
 }
 
-async function globpath(
+function globpath(
   denops: Denops,
   path: string,
   pattern: string,
