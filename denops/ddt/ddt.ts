@@ -97,7 +97,7 @@ export class Ddt {
       return "";
     }
 
-    return await ui.getInput({
+    return ui.getInput({
       denops,
       context: this.#context,
       options: this.#options,

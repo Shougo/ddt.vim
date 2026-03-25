@@ -193,10 +193,12 @@ async function createPathCache(
   return cache;
 }
 
-async function globpath(
+function globpath(
   denops: Denops,
   path: string,
   pattern: string,
 ): Promise<string[]> {
-  return await fn.globpath(denops, path, pattern, 1, 1) as unknown as string[];
+  return fn.globpath(denops, path, pattern, 1, 1) as unknown as Promise<
+    string[]
+  >;
 }
