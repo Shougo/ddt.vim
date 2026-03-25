@@ -157,7 +157,7 @@ export const main: Entrypoint = (denops: Denops) => {
 
       const ddt = getDdt(name);
       if (ddt.getOptions().ui !== "") {
-        return await ddt.getInput(denops);
+        return ddt.getInput(denops);
       }
 
       return "";
