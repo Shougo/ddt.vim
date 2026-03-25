@@ -198,5 +198,7 @@ async function globpath(
   path: string,
   pattern: string,
 ): Promise<string[]> {
-  return fn.globpath(denops, path, pattern, 1, 1) as unknown as Promise<string[]>;
+  return fn.globpath(denops, path, pattern, 1, 1) as unknown as Promise<
+    string[]
+  >;
 }
