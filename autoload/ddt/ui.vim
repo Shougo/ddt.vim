@@ -36,7 +36,7 @@ function! ddt#ui#buffer_delete(bufnr) abort
     const winid_save = win_getid()
     call win_gotoid(winid)
 
-    noautocmd silent enew
+    silent enew
     execute 'silent! bdelete!' a:bufnr
 
     call win_gotoid(winid_save)
