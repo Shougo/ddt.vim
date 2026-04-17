@@ -106,7 +106,7 @@ export async function uiAction(
   }
 
   const action = uiOptions.actions[actionName] ??
-    ui.actions[actionName].callback;
+    ui.actions[actionName]?.callback;
   if (!action) {
     await printError(denops, `Not found UI action: ${actionName}`);
     return [undefined, uiOptions, uiParams, ActionFlags.None];
