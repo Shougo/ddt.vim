@@ -34,15 +34,6 @@ function s:normalize_key_or_dict(key_or_dict, value) abort
   return {}
 endfunction
 
-function s:normalize_string_or_list(string_or_list) abort
-  if a:string_or_list->type() == v:t_list
-    return a:string_or_list
-  elseif a:string_or_list->type() == v:t_string
-    return [a:string_or_list]
-  endif
-  return []
-endfunction
-
 function s:notify(method, args) abort
   " Save args
   if !'g:ddt#_notifies'->exists()
