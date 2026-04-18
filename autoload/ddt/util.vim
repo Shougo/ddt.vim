@@ -1,5 +1,3 @@
-const s:is_windows = has('win32') || has('win64')
-
 function ddt#util#print_error(string, name = 'ddt') abort
   echohl Error
   for line in

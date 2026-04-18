@@ -93,28 +93,31 @@ export class Kind extends BaseKind<Params> {
         return Promise.resolve(ActionFlags.None);
       },
     },
-    switch: async (args: { denops: Denops; items: DduItem[] }) => {
-      for (const item of args.items) {
-        const action = item?.action as ActionData;
-        await args.denops.cmd(`tabnext ${action.tabNr}`);
+    switch: {
+      description: "Switch to ddt tab.",
+      callback: async (args: { denops: Denops; items: DduItem[] }) => {
+        for (const item of args.items) {
+          const action = item?.action as ActionData;
+          await args.denops.cmd(`tabnext ${action.tabNr}`);
 
-        const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
-        if (bufNr > 0) {
-          await vars.t.set(args.denops, "ddt_ui_last_bufnr", bufNr);
+          const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
+          if (bufNr > 0) {
+            await vars.t.set(args.denops, "ddt_ui_last_bufnr", bufNr);
 
-          await vars.g.set(
-            args.denops,
-            "ddt_ui_last_winid",
-            await fn.win_getid(args.denops),
-          );
+            await vars.g.set(
+              args.denops,
+              "ddt_ui_last_winid",
+              await fn.win_getid(args.denops),
+            );
 
-          if (await fn.bufnr(args.denops, "%") === bufNr) {
-            await args.denops.call("ddt#ui#do_action", "redraw");
+            if (await fn.bufnr(args.denops, "%") === bufNr) {
+              await args.denops.call("ddt#ui#do_action", "redraw");
+            }
           }
         }
-      }
 
-      return Promise.resolve(ActionFlags.None);
+        return Promise.resolve(ActionFlags.None);
+      },
     },
     new: {
       description: "Create new ddt tab directory.",

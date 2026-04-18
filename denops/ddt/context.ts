@@ -128,11 +128,9 @@ class Custom {
   local: Record<string, Partial<DdtOptions>> = {};
 
   get(userOptions: UserOptions): DdtOptions {
-    const options = foldMerge(mergeDdtOptions, defaultDdtOptions, [
-      this.global,
-      userOptions,
-    ]);
-    const name = options.name;
+    const name = (userOptions["name"] as string | undefined)
+      ?? this.global.name
+      ?? defaultDdtOptions().name;
     const local = this.local[name] || {};
     return foldMerge(mergeDdtOptions, defaultDdtOptions, [
       this.global,

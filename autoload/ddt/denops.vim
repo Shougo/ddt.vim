@@ -42,7 +42,7 @@ function s:init() abort
   endif
 
   if !has('patch-9.1.1646') && !has('nvim-0.11')
-    call ddt#util#_error('ddt.vim requires Vim 9.1.1646+ or Neovim 0.11+.')
+    call ddt#util#print_error('ddt.vim requires Vim 9.1.1646+ or Neovim 0.11+')
     return 1
   endif
 
