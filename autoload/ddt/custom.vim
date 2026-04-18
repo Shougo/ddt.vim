@@ -35,11 +35,12 @@ function s:normalize_key_or_dict(key_or_dict, value) abort
 endfunction
 
 function s:notify(method, args) abort
-  " Save args
-  if !'g:ddt#_notifies'->exists()
-    let g:ddt#_notifies = []
+  if !'s:initialized'->exists()
+    if !'g:ddt#_notifies'->exists()
+      let g:ddt#_notifies = []
+    endif
+    call add(g:ddt#_notifies, #{ method: a:method, args: a:args })
   endif
-  call add(g:ddt#_notifies, #{ method: a:method, args: a:args })
 
   return ddt#denops#_notify(a:method, a:args)
 endfunction
