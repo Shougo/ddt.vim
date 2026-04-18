@@ -26,7 +26,7 @@ function ddt#ui#kill_editor() abort
   endif
 endfunction
 
-function! ddt#ui#buffer_delete(bufnr) abort
+function ddt#ui#buffer_delete(bufnr) abort
   if a:bufnr < 0
     return
   endif
