@@ -5,7 +5,6 @@ import {
   type Item,
 } from "@shougo/ddu-vim/types";
 import { BaseSource } from "@shougo/ddu-vim/source";
-import { safeStat } from "@shougo/ddu-vim/utils";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
@@ -120,24 +119,43 @@ export class Source extends BaseSource<Params> {
 }
 
 async function getHistory(path: string, limit: number): Promise<string[]> {
-  const stat = await safeStat(path);
-  if (!stat) {
+  let file: Deno.FsFile;
+  try {
+    file = await Deno.open(path, { read: true });
+  } catch (_: unknown) {
     return [];
   }
 
-  const decoder = new TextDecoder("utf-8");
-  const data = await Deno.readFile(path);
-  const lines = decoder.decode(data).split("\n");
+  const seen = new Set<string>();
+  const commands: string[] = [];
+  let partial = "";
 
-  // Get zsh command lines
-  const commands = [
-    ...new Set(
-      lines.map((line) => {
-        const match = line.match(/^: \d+:\d+;(.*)/);
-        return match ? match[1] : line;
-      }).filter((cmd) => cmd !== ""),
-    ),
-  ];
+  // Stream the file line by line to avoid loading the entire file into memory.
+  for await (
+    const chunk of file.readable.pipeThrough(new TextDecoderStream())
+  ) {
+    const text = partial + chunk;
+    const lines = text.split("\n");
+    partial = lines.pop() ?? "";
+    for (const line of lines) {
+      // Get zsh command lines
+      const match = line.match(/^: \d+:\d+;(.*)/);
+      const cmd = match ? match[1] : line;
+      if (cmd !== "" && !seen.has(cmd)) {
+        seen.add(cmd);
+        commands.push(cmd);
+      }
+    }
+  }
+  // Handle any remaining partial line at end of file.
+  if (partial !== "") {
+    const match = partial.match(/^: \d+:\d+;(.*)/);
+    const cmd = match ? match[1] : partial;
+    if (cmd !== "" && !seen.has(cmd)) {
+      seen.add(cmd);
+      commands.push(cmd);
+    }
+  }
 
   return commands.slice(-limit);
 }
