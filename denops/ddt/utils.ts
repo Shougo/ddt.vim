@@ -45,19 +45,9 @@ export function isDenoCacheIssueError(e: unknown): boolean {
 }
 
 export async function safeStat(path: string): Promise<Deno.FileInfo | null> {
-  // NOTE: Deno.stat() may be failed
+  // NOTE: Deno.lstat() may be failed
   try {
-    const stat = await Deno.lstat(path);
-    if (stat.isSymlink) {
-      try {
-        const stat = await Deno.stat(path);
-        stat.isSymlink = true;
-        return stat;
-      } catch (_: unknown) {
-        // Ignore stat exception
-      }
-    }
-    return stat;
+    return await Deno.lstat(path);
   } catch (_: unknown) {
     // Ignore stat exception
   }
