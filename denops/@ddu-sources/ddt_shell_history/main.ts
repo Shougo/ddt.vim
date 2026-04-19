@@ -5,7 +5,6 @@ import {
   type Item,
 } from "@shougo/ddu-vim/types";
 import { BaseSource } from "@shougo/ddu-vim/source";
-import { safeStat } from "@shougo/ddu-vim/utils";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
@@ -120,24 +119,48 @@ export class Source extends BaseSource<Params> {
 }
 
 async function getHistory(path: string, limit: number): Promise<string[]> {
-  const stat = await safeStat(path);
-  if (!stat) {
-    return [];
-  }
+  const seen = new Set<string>();
+  const commands: string[] = [];
+  let partial = "";
+  const buf = new Uint8Array(32 * 1024);
+  const decoder = new TextDecoder();
 
-  const decoder = new TextDecoder("utf-8");
-  const data = await Deno.readFile(path);
-  const lines = decoder.decode(data).split("\n");
-
-  // Get zsh command lines
-  const commands = [
-    ...new Set(
-      lines.map((line) => {
+  let file: Deno.FsFile | undefined;
+  try {
+    file = await Deno.open(path, { read: true });
+    // Stream the file in chunks to avoid loading it entirely into memory.
+    let bytesRead: number | null;
+    while ((bytesRead = await file.read(buf)) !== null) {
+      const chunk = decoder.decode(buf.subarray(0, bytesRead), {
+        stream: true,
+      });
+      const text = partial + chunk;
+      const lines = text.split("\n");
+      partial = lines.pop() ?? "";
+      for (const line of lines) {
+        // Get zsh command lines
         const match = line.match(/^: \d+:\d+;(.*)/);
-        return match ? match[1] : line;
-      }).filter((cmd) => cmd !== ""),
-    ),
-  ];
+        const cmd = match ? match[1] : line;
+        if (cmd !== "" && !seen.has(cmd)) {
+          seen.add(cmd);
+          commands.push(cmd);
+        }
+      }
+    }
+    // Handle any remaining partial line at end of file.
+    if (partial !== "") {
+      const match = partial.match(/^: \d+:\d+;(.*)/);
+      const cmd = match ? match[1] : partial;
+      if (cmd !== "" && !seen.has(cmd)) {
+        seen.add(cmd);
+        commands.push(cmd);
+      }
+    }
+  } catch (_: unknown) {
+    // Ignore open/read errors (e.g. file not found, permission denied).
+  } finally {
+    file?.close();
+  }
 
   return commands.slice(-limit);
 }

@@ -98,10 +98,9 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     async loadConfig(arg1: unknown): Promise<void> {
       //const startTime = Date.now();
+      const path = ensure(arg1, is.String);
       // NOTE: Lock until load finished to prevent execute start() API.
       await lock.lock(async () => {
-        const path = ensure(arg1, is.String);
-
         try {
           const mod = await importPlugin(path);
           // deno-lint-ignore no-explicit-any
