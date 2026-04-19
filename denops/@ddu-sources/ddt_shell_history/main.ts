@@ -5,7 +5,7 @@ import {
   type Item,
 } from "@shougo/ddu-vim/types";
 import { BaseSource } from "@shougo/ddu-vim/source";
-import { safeStat } from "@shougo/ddt-vim/utils";
+import { safeStat } from "@shougo/ddu-vim/utils";
 
 import type { Denops } from "@denops/std";
 import * as fn from "@denops/std/function";
@@ -130,22 +130,14 @@ async function getHistory(path: string, limit: number): Promise<string[]> {
   const lines = decoder.decode(data).split("\n");
 
   // Get zsh command lines
-  const commands = lines.map((line) => {
-    const match = line.match(/^: \d+:\d+;(.*)/);
-    return match ? match[1] : line;
-  }).filter((cmd) => cmd !== "");
+  const commands = [
+    ...new Set(
+      lines.map((line) => {
+        const match = line.match(/^: \d+:\d+;(.*)/);
+        return match ? match[1] : line;
+      }).filter((cmd) => cmd !== ""),
+    ),
+  ];
 
-  function uniq(arr: string[]): string[] {
-    const seen = new Set<string>();
-    return arr.filter((item) => {
-      if (seen.has(item)) {
-        return false;
-      } else {
-        seen.add(item);
-        return true;
-      }
-    });
-  }
-
-  return uniq(commands).slice(-limit);
+  return commands.slice(-limit);
 }

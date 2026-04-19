@@ -44,6 +44,7 @@ You need to install ddt-ui plugins like this.
 - <https://github.com/Shougo/ddt-ui-shell>
 
 To use Vim/Neovim as "$EDITOR", install "vim-guise" is recommended.
+
 - <https://github.com/lambdalisue/vim-guise>
 
 ### Config example

@@ -1,7 +1,6 @@
 {
   "imports": {
     "@denops/std": "jsr:@denops/std@~8.2.0",
-    "@shougo/ddu-vim": "jsr:@shougo/ddu-vim@~11.1.0",
-    "@shougo/ddt-vim": "jsr:@shougo/ddt-vim@*"
+    "@shougo/ddu-vim": "jsr:@shougo/ddu-vim@~11.1.0"
   }
 }

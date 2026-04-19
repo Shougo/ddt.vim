@@ -35,8 +35,7 @@ function s:normalize_key_or_dict(key_or_dict, value) abort
 endfunction
 
 function s:notify(method, args) abort
-  " Save args for replay before denops initialization
-  if !ddt#denops#_denops_running()
+  if !'s:initialized'->exists()
     if !'g:ddt#_notifies'->exists()
       let g:ddt#_notifies = []
     endif
