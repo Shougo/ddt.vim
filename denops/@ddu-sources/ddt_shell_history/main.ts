@@ -119,42 +119,47 @@ export class Source extends BaseSource<Params> {
 }
 
 async function getHistory(path: string, limit: number): Promise<string[]> {
-  let file: Deno.FsFile;
-  try {
-    file = await Deno.open(path, { read: true });
-  } catch (_: unknown) {
-    return [];
-  }
-
   const seen = new Set<string>();
   const commands: string[] = [];
   let partial = "";
+  const buf = new Uint8Array(32 * 1024);
+  const decoder = new TextDecoder();
 
-  // Stream the file line by line to avoid loading the entire file into memory.
-  for await (
-    const chunk of file.readable.pipeThrough(new TextDecoderStream())
-  ) {
-    const text = partial + chunk;
-    const lines = text.split("\n");
-    partial = lines.pop() ?? "";
-    for (const line of lines) {
-      // Get zsh command lines
-      const match = line.match(/^: \d+:\d+;(.*)/);
-      const cmd = match ? match[1] : line;
+  let file: Deno.FsFile | undefined;
+  try {
+    file = await Deno.open(path, { read: true });
+    // Stream the file in chunks to avoid loading it entirely into memory.
+    let bytesRead: number | null;
+    while ((bytesRead = await file.read(buf)) !== null) {
+      const chunk = decoder.decode(buf.subarray(0, bytesRead), {
+        stream: true,
+      });
+      const text = partial + chunk;
+      const lines = text.split("\n");
+      partial = lines.pop() ?? "";
+      for (const line of lines) {
+        // Get zsh command lines
+        const match = line.match(/^: \d+:\d+;(.*)/);
+        const cmd = match ? match[1] : line;
+        if (cmd !== "" && !seen.has(cmd)) {
+          seen.add(cmd);
+          commands.push(cmd);
+        }
+      }
+    }
+    // Handle any remaining partial line at end of file.
+    if (partial !== "") {
+      const match = partial.match(/^: \d+:\d+;(.*)/);
+      const cmd = match ? match[1] : partial;
       if (cmd !== "" && !seen.has(cmd)) {
         seen.add(cmd);
         commands.push(cmd);
       }
     }
-  }
-  // Handle any remaining partial line at end of file.
-  if (partial !== "") {
-    const match = partial.match(/^: \d+:\d+;(.*)/);
-    const cmd = match ? match[1] : partial;
-    if (cmd !== "" && !seen.has(cmd)) {
-      seen.add(cmd);
-      commands.push(cmd);
-    }
+  } catch (_: unknown) {
+    // Ignore open/read errors (e.g. file not found, permission denied).
+  } finally {
+    file?.close();
   }
 
   return commands.slice(-limit);
