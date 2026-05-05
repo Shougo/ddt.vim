@@ -25,7 +25,7 @@ export class Source extends BaseSource<Params> {
   }): ReadableStream<Item<ActionData>[]> {
     return new ReadableStream({
       async start(controller) {
-        let histories: string[] = [];
+        const histories: string[] = [];
         for (const path of args.sourceParams.paths) {
           const expandedPath = await fn.expand(args.denops, path) as string;
           const entries = await getHistory(expandedPath, args.sourceParams.limit);

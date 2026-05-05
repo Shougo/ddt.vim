@@ -51,8 +51,8 @@ Deno.test("mergeDdtOptions: uiParams are deep-merged per UI name", () => {
   };
   const merged = mergeDdtOptions(base, patch);
 
-  // patch entries overwrite base for the same key
-  assertEquals(merged.uiParams["terminal"], { height: 24 });
+  // both "terminal" entries are merged: base keys preserved, patch keys added
+  assertEquals(merged.uiParams["terminal"], { width: 80, height: 24 });
 });
 
 Deno.test("mergeDdtOptions: empty patch returns equivalent to base", () => {
