@@ -30,7 +30,10 @@ Deno.test(
 Deno.test(
   "isDenoCacheIssueError: returns false for non-TypeError errors",
   () => {
-    assertEquals(isDenoCacheIssueError(new Error("Could not find version of x")), false);
+    assertEquals(
+      isDenoCacheIssueError(new Error("Could not find version of x")),
+      false,
+    );
     assertEquals(isDenoCacheIssueError("string error"), false);
     assertEquals(isDenoCacheIssueError(null), false);
     assertEquals(isDenoCacheIssueError(undefined), false);

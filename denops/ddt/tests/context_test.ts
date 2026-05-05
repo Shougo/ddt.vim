@@ -1,9 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
-import {
-  defaultDdtOptions,
-  foldMerge,
-  mergeDdtOptions,
-} from "../context.ts";
+import { defaultDdtOptions, foldMerge, mergeDdtOptions } from "../context.ts";
 import type { DdtOptions } from "../types.ts";
 
 Deno.test("defaultDdtOptions: returns expected default values", () => {
