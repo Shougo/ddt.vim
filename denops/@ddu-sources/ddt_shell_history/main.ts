@@ -28,11 +28,9 @@ export class Source extends BaseSource<Params> {
         let histories: string[] = [];
         for (const path of args.sourceParams.paths) {
           const expandedPath = await fn.expand(args.denops, path) as string;
-          histories = [
-            ...histories,
-            ...((await getHistory(expandedPath, args.sourceParams.limit))
-              .reverse()),
-          ];
+          const entries = await getHistory(expandedPath, args.sourceParams.limit);
+          entries.reverse();
+          histories.push(...entries);
         }
 
         const items = histories.map((history) => {
@@ -118,7 +116,7 @@ export class Source extends BaseSource<Params> {
   }
 }
 
-async function getHistory(path: string, limit: number): Promise<string[]> {
+export async function getHistory(path: string, limit: number): Promise<string[]> {
   const seen = new Set<string>();
   const commands: string[] = [];
   let partial = "";

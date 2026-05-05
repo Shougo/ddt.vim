@@ -28,7 +28,7 @@ see "FAQ" section in [help](doc/ddt.txt).
 
 ## Install
 
-**NOTE:** It requires Vim 9.1.0448+ or Neovim 0.10.0+. See
+**NOTE:** It requires Vim 9.1.1646+ or Neovim 0.11+. See
 [requirements](#requirements) if you aren't sure whether you have this.
 
 ### Requirements

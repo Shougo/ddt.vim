@@ -97,7 +97,6 @@ export const main: Entrypoint = (denops: Denops) => {
       return Promise.resolve(contextBuilder.getLocal());
     },
     async loadConfig(arg1: unknown): Promise<void> {
-      //const startTime = Date.now();
       const path = ensure(arg1, is.String);
       // NOTE: Lock until load finished to prevent execute start() API.
       await lock.lock(async () => {
@@ -120,20 +119,15 @@ export const main: Entrypoint = (denops: Denops) => {
           throw e;
         }
       });
-      //console.log(`${arg1}: ${Date.now() - startTime} ms`);
       return Promise.resolve();
     },
     async start(arg1: unknown): Promise<void> {
-      //const startTime = Date.now();
-
       const userOptions = ensure(arg1, is.Record) as UserOptions;
       const [context, options] = await contextBuilder.get(denops, userOptions);
 
       const ddt = getDdt(options.name);
 
       await ddt.start(denops, context, options, userOptions);
-
-      //console.log(`${Date.now() - startTime} ms`);
     },
     async uiAction(
       arg1: unknown,
