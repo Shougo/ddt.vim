@@ -93,4 +93,9 @@ function s:register() abort
 endfunction
 function s:stopped() abort
   unlet! s:initialized
+
+  " Restore custom config
+  for custom in g:->get('ddt#_notifies', [])
+    call ddt#denops#_notify(custom.method, custom.args)
+  endfor
 endfunction
