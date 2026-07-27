@@ -31,7 +31,11 @@ function s:normalize_key_or_dict(key_or_dict, value) abort
     let base[a:key_or_dict] = a:value
     return base
   endif
-  return {}
+
+  throw printf(
+        \   'ddt#custom: "key_or_dict" must be Dict or String, got %s',
+        \   type(a:key_or_dict)
+        \ )
 endfunction
 
 function s:notify(method, args) abort
