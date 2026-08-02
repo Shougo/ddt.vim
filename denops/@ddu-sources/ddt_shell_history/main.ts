@@ -59,7 +59,10 @@ export class Source extends BaseSource<Params> {
       sourceParams: Params;
     }) => {
       for (const item of args.items) {
-        const action = item.action as ActionData;
+        const action = item?.action as ActionData | undefined;
+        if (!action || typeof action.commandLine !== "string") {
+          continue;
+        }
 
         const commandLine = await args.denops.call(
           "input",
@@ -85,7 +88,10 @@ export class Source extends BaseSource<Params> {
       sourceParams: Params;
     }) => {
       for (const item of args.items) {
-        const action = item.action as ActionData;
+        const action = item?.action as ActionData | undefined;
+        if (!action || typeof action.commandLine !== "string") {
+          continue;
+        }
 
         await args.denops.call("ddt#ui#do_action", "send", {
           str: action.commandLine,
@@ -100,7 +106,10 @@ export class Source extends BaseSource<Params> {
       sourceParams: Params;
     }) => {
       for (const item of args.items) {
-        const action = item.action as ActionData;
+        const action = item?.action as ActionData | undefined;
+        if (!action || typeof action.commandLine !== "string") {
+          continue;
+        }
 
         await args.denops.call("ddt#ui#do_action", "insert", {
           str: action.commandLine,
@@ -117,6 +126,18 @@ export class Source extends BaseSource<Params> {
       paths: [],
     };
   }
+}
+
+function parseHistoryLine(line: string): string {
+  // zsh extended history: ": 1710000000:0;command"
+  const zshMatch = line.match(/^: \d+:\d+;(.*)/);
+  if (zshMatch) {
+    return zshMatch[1];
+  }
+
+  // bash history comment/metadata lines can be ignored if needed.
+  // For now, treat the line as a command line.
+  return line;
 }
 
 export async function getHistory(
@@ -142,19 +163,18 @@ export async function getHistory(
       const lines = text.split("\n");
       partial = lines.pop() ?? "";
       for (const line of lines) {
-        // Get zsh command lines
-        const match = line.match(/^: \d+:\d+;(.*)/);
-        const cmd = match ? match[1] : line;
+        const cmd = parseHistoryLine(line);
         if (cmd !== "" && !seen.has(cmd)) {
           seen.add(cmd);
           commands.push(cmd);
         }
       }
     }
-    // Handle any remaining partial line at end of file.
+
+    // Flush decoder state and handle any remaining partial line at end of file.
+    partial += decoder.decode();
     if (partial !== "") {
-      const match = partial.match(/^: \d+:\d+;(.*)/);
-      const cmd = match ? match[1] : partial;
+      const cmd = parseHistoryLine(partial);
       if (cmd !== "" && !seen.has(cmd)) {
         seen.add(cmd);
         commands.push(cmd);
