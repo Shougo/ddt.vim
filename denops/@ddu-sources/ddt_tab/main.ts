@@ -20,18 +20,16 @@ export class Source extends BaseSource<Params> {
           [...Array(await fn.tabpagenr(args.denops, "$"))].map(
             async (_, i) => {
               const tabNr = i + 1;
-              const cwd = await fn.gettabvar(
-                args.denops,
-                tabNr,
-                "ddt_ui_last_directory",
-                "",
-              ) as string;
+              const { cwd, exists } = await getTabCwd(args.denops, tabNr);
+              const label = exists
+                ? cwd
+                : cwd.length === 0
+                ? `[no ddt tab] tab ${tabNr}`
+                : `[no ddt] ${cwd}`;
               return {
-                word: cwd.length === 0
-                  ? `[no ddt] ${await fn.getcwd(args.denops, 0, tabNr)}`
-                  : cwd,
+                word: label,
                 action: {
-                  cwd,
+                  cwd: cwd.length > 0 ? cwd : await fn.getcwd(args.denops),
                   tabNr: tabNr,
                 },
               };
@@ -50,5 +48,31 @@ export class Source extends BaseSource<Params> {
 
   override params(): Params {
     return {};
+  }
+}
+
+async function getTabCwd(
+  denops: Denops,
+  tabNr: number,
+): Promise<{ cwd: string; exists: boolean }> {
+  try {
+    const cwd = await fn.gettabvar(
+      denops,
+      tabNr,
+      "ddt_ui_last_directory",
+      "",
+    ) as string;
+
+    if (cwd.length > 0) {
+      return { cwd, exists: true };
+    }
+  } catch (_e: unknown) {
+    // Fall through and use getcwd() as a fallback.
+  }
+
+  try {
+    return { cwd: await fn.getcwd(denops, 0, tabNr), exists: false };
+  } catch (_e: unknown) {
+    return { cwd: "", exists: false };
   }
 }
