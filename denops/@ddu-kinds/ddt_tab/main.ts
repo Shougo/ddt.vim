@@ -20,10 +20,15 @@ export class Kind extends BaseKind<Params> {
       callback: async (args: { denops: Denops; items: DduItem[] }) => {
         const currentTab = await fn.tabpagenr(args.denops);
         const tabNrs = args.items
-          .map((item) => (item?.action as ActionData)?.tabNr)
-          .filter((tabNr) => tabNr !== undefined && tabNr != currentTab);
+          .map((item) => (item?.action as ActionData | undefined)?.tabNr)
+          .filter((tabNr): tabNr is number =>
+            typeof tabNr === "number" && tabNr > 0 && tabNr != currentTab
+          );
 
         for (const tabNr of tabNrs.sort().reverse()) {
+          if ((await fn.tabpagebuflist(args.denops, tabNr)).length === 0) {
+            continue;
+          }
           await args.denops.cmd(`silent! tabclose ${tabNr}`);
         }
 
@@ -34,7 +39,19 @@ export class Kind extends BaseKind<Params> {
       description: "Change ddt tab directory.",
       callback: async (args: { denops: Denops; items: DduItem[] }) => {
         for (const item of args.items) {
-          const action = item?.action as ActionData;
+          const action = item?.action as ActionData | undefined;
+          if (
+            !action || typeof action.tabNr !== "number" || action.tabNr <= 0
+          ) {
+            continue;
+          }
+
+          if (
+            (await fn.tabpagebuflist(args.denops, action.tabNr)).length === 0
+          ) {
+            continue;
+          }
+
           const cwd = await fn.gettabvar(
             args.denops,
             action.tabNr,
@@ -97,7 +114,19 @@ export class Kind extends BaseKind<Params> {
       description: "Switch to ddt tab.",
       callback: async (args: { denops: Denops; items: DduItem[] }) => {
         for (const item of args.items) {
-          const action = item?.action as ActionData;
+          const action = item?.action as ActionData | undefined;
+          if (
+            !action || typeof action.tabNr !== "number" || action.tabNr <= 0
+          ) {
+            continue;
+          }
+
+          if (
+            (await fn.tabpagebuflist(args.denops, action.tabNr)).length === 0
+          ) {
+            continue;
+          }
+
           await args.denops.cmd(`tabnext ${action.tabNr}`);
 
           const bufNr = await vars.t.get(args.denops, "ddt_ui_last_bufnr", -1);
@@ -123,7 +152,13 @@ export class Kind extends BaseKind<Params> {
       description: "Create new ddt tab directory.",
       callback: async (args: { denops: Denops; items: DduItem[] }) => {
         for (const item of args.items) {
-          const action = item?.action as ActionData;
+          const action = item?.action as ActionData | undefined;
+          if (
+            !action || typeof action.tabNr !== "number" || action.tabNr <= 0
+          ) {
+            continue;
+          }
+
           const cwd = action.cwd.length === 0
             ? await fn.getcwd(args.denops)
             : action.cwd;
