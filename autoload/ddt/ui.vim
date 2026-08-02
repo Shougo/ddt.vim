@@ -9,6 +9,7 @@ endfunction
 
 function ddt#ui#kill_editor() abort
   if !'g:ddt_ui_last_winid'->exists()
+        \ || g:ddt_ui_last_winid->win_id2win() == 0
     return
   endif
 
