@@ -21,6 +21,7 @@ export const main: Entrypoint = (denops: Denops) => {
   const ddts: Record<string, Ddt> = {};
   const contextBuilder = new ContextBuilderImpl();
   const lock = new Lock(0);
+  let configLoaded = false;
 
   const getLoader = (name: string) => {
     if (!loaders[name]) {
@@ -105,6 +106,7 @@ export const main: Entrypoint = (denops: Denops) => {
           // deno-lint-ignore no-explicit-any
           const obj = new (mod as any).Config();
           await obj.config({ denops, contextBuilder });
+          configLoaded = true;
         } catch (e) {
           if (isDenoCacheIssueError(e)) {
             console.warn("*".repeat(80));
@@ -123,6 +125,11 @@ export const main: Entrypoint = (denops: Denops) => {
     },
     async start(arg1: unknown): Promise<void> {
       const userOptions = ensure(arg1, is.Record) as UserOptions;
+
+      if (!configLoaded) {
+        throw new Error("ddt config is not loaded yet.");
+      }
+
       const [context, options] = await contextBuilder.get(denops, userOptions);
 
       const ddt = getDdt(options.name);
