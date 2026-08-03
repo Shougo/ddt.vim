@@ -9,7 +9,6 @@ endfunction
 
 function ddt#ui#kill_editor() abort
   if !'g:ddt_ui_last_winid'->exists()
-        \ || g:ddt_ui_last_winid->win_id2win() == 0
     return
   endif
 
@@ -17,7 +16,9 @@ function ddt#ui#kill_editor() abort
 
   call ddt#ui#buffer_delete(bufnr())
 
-  call win_gotoid(g:ddt_ui_last_winid)
+  if g:ddt_ui_last_winid->win_id2win() > 0
+    call win_gotoid(g:ddt_ui_last_winid)
+  endif
 
   execute 'tabclose' tabpagenr_save
 
