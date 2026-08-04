@@ -41,12 +41,8 @@ export class Loader {
     const runtimepath = await op.runtimepath.getGlobal(denops);
     if (runtimepath !== this.#prevRuntimepath) {
       const cachedPaths = await createPathCache(denops, runtimepath);
-
-      // NOTE: glob may be invalid.
-      if (cachedPaths.size > 0) {
-        this.#cachedPaths = cachedPaths;
-        this.#prevRuntimepath = runtimepath;
-      }
+      this.#cachedPaths = cachedPaths;
+      this.#prevRuntimepath = runtimepath;
     }
 
     const key = `${PLUGIN_PREFIX}-${type}s/${name}`;
@@ -103,6 +99,10 @@ export class Loader {
       const typeExt = this.#exts[type];
       switch (type) {
         case "ui": {
+          if (!importedMod || typeof importedMod.Ui !== "function") {
+            throw new Error(`Invalid extension module: '${path}' does not export Ui.`);
+          }
+
           const ext = new importedMod.Ui();
           ext.name = name;
           ext.path = path;
@@ -185,7 +185,7 @@ async function createPathCache(
 
   // Remove duplicate keys.
   // Note that `Map` prioritizes the later value, so need to reversed.
-  const cache = new Map(keyPaths.toReversed());
+  const cache = new Map(keyPaths.slice().reverse());
 
   return cache;
 }
