@@ -16,9 +16,7 @@ function ddt#ui#kill_editor() abort
 
   call ddt#ui#buffer_delete(bufnr())
 
-  if g:ddt_ui_last_winid->win_id2win() > 0
-    call win_gotoid(g:ddt_ui_last_winid)
-  endif
+  call win_gotoid(g:ddt_ui_last_winid)
 
   execute 'tabclose' tabpagenr_save
 
