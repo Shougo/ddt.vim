@@ -17,6 +17,18 @@ import type { Loader } from "./loader.ts";
 import { printError } from "./utils.ts";
 
 import type { Denops } from "@denops/std";
+import { Lock } from "@core/asyncutil/lock";
+
+const initLocks = new Map<string, Lock>();
+
+function getInitLock(name: string): Lock {
+  let lock = initLocks.get(name);
+  if (!lock) {
+    lock = new Lock(0);
+    initLocks.set(name, lock);
+  }
+  return lock;
+}
 
 export async function getUi(
   denops: Denops,
@@ -53,7 +65,10 @@ export async function getUi(
   }
 
   const [uiOptions, uiParams] = uiArgs(options, ui);
-  await checkUiOnInit(ui, denops, options, uiOptions, uiParams);
+
+  await getInitLock(ui.name).lock(async () => {
+    await checkUiOnInit(ui, denops, options, uiOptions, uiParams);
+  });
 
   return [ui, uiOptions, uiParams];
 }
@@ -112,29 +127,17 @@ export async function uiAction(
     return [undefined, uiOptions, uiParams, ActionFlags.None];
   }
 
-  let ret;
-  if (typeof action === "string") {
-    ret = await denops.call(
-      "denops#callback#call",
-      action,
-      {
-        context,
-        options,
-        uiOptions,
-        uiParams,
-        actionParams,
-      },
-    ) as ActionFlags;
-  } else {
-    ret = await action({
-      denops,
-      context,
-      options,
-      uiOptions,
-      uiParams,
-      actionParams,
-    });
-  }
+  const args = {
+    denops,
+    context,
+    options,
+    uiOptions,
+    uiParams,
+    actionParams,
+  };
+  const ret = typeof action === "string"
+    ? await denops.call("denops#callback#call", action, args) as ActionFlags
+    : await action(args);
 
   return [ui, uiOptions, uiParams, ret];
 }
@@ -157,10 +160,10 @@ async function checkUiOnInit(
       uiParams,
     });
 
-    ui.isInitialized = true;
-
-    // Set $EDITOR
+    // Set $EDITOR only after init succeeded.
     await denops.call("ddt#ui#_set_editor", options.nvimServer);
+
+    ui.isInitialized = true;
   } catch (e: unknown) {
     await printError(denops, `ui: ${ui.name} "onInit()" failed`, e);
   }

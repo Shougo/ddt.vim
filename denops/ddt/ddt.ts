@@ -28,9 +28,10 @@ export class Ddt {
     userOptions: UserOptions,
   ): Promise<void> {
     this.#context = context;
-    this.#options = options;
-
-    this.updateOptions(userOptions);
+    this.#options = foldMerge(mergeDdtOptions, defaultDdtOptions, [
+      options,
+      userOptions,
+    ]);
 
     const [ui, uiOptions, uiParams] = await getUi(
       denops,

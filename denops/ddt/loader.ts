@@ -100,7 +100,9 @@ export class Loader {
       switch (type) {
         case "ui": {
           if (!importedMod || typeof importedMod.Ui !== "function") {
-            throw new Error(`Invalid extension module: '${path}' does not export Ui.`);
+            throw new Error(
+              `Invalid extension module: '${path}' does not export Ui.`,
+            );
           }
 
           const ext = new importedMod.Ui();
