@@ -19,9 +19,9 @@ import { printError } from "./utils.ts";
 import type { Denops } from "@denops/std";
 import { Lock } from "@core/asyncutil/lock";
 
-const initLocks = new Map<string, Lock>();
+const initLocks = new Map<string, Lock<unknown>>();
 
-function getInitLock(name: string): Lock {
+function getInitLock(name: string): Lock<unknown> {
   let lock = initLocks.get(name);
   if (!lock) {
     lock = new Lock(0);
