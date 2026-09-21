@@ -120,9 +120,13 @@ ddt#get_input({name})
 
                                                                  *ddt#start()*
 ddt#start([{options}])
-		Creates a new Ddt.
+		Start or redraw a Ddt instance.
+
+		If an instance with the same |ddt-option-name| already exists,
+		it is reused.
 		NOTE: It can be called by "start" dispatcher in TypeScript.
-		NOTE: It must be called after |DenopsReady|.
+		NOTE: The configuration must be loaded before this function is
+		processed. If Denops is not ready yet, the request is delayed.
 		NOTE: It does not work in |command-line-window|.
 
 		Refer to |ddt-options| about {options}.  If you skip a value,
@@ -130,11 +134,9 @@ ddt#start([{options}])
 
                                                              *ddt#ui_action()*
 ddt#ui_action({name}, {action}[, {params}])
-		Do the {action} action in current UI synchronously.
+		Request the {action} action for the Ddt instance {name}.
 
-		{name} is specified ddt name(|ddt-option-name|).
-
-		{params} is action params.
+		NOTE: It is asynchronous.
 		NOTE: It does not work in |command-line-window|.
 		NOTE: You must not call it in |autocmd|.
 
@@ -176,20 +178,23 @@ UI FUNCTIONS                                                *ddt-ui-functions*
 
                                                           *ddt#ui#do_action()*
 ddt#ui#do_action({action}[, {params}])
-		Do the {action} action in current UI synchronously.
+		Request the {action} action in the current UI.
 
 		{params} is action params.
+		NOTE: It is asynchronous.
 		NOTE: You must not call it in |autocmd|.
 
                                                           *ddt#ui#get_input()*
 ddt#ui#get_input()
-		Get the command line input from current cursor.
+		Get the current input from the Ddt UI.
 
                                                         *ddt#ui#kill_editor()*
 ddt#ui#kill_editor()
-		Kill the current buffer and the current tab and return to the
-		last ddt ui window.
-		It is useful to use git editor.
+		Delete the current buffer forcibly, close the current tab, and
+		return to the last Ddt UI window.
+
+		NOTE: Unsaved changes in the current buffer may be discarded.
+		NOTE: It requires |g:ddt_ui_last_winid|.
 
 ==============================================================================
 DDU SOURCES                                                  *ddt-ddu-sources*
@@ -235,8 +240,9 @@ NOTE: The UIs cannot set default options.  If they need to specify the
 recommended configuration, you should write it in the documentation instead.
 
                                                        *ddt-ui-option-actions*
-actions			(Record<string, function>)
-		Overwrites UI actions.
+actions			(Record<string, string | function>)	(Required)
+		Defines UI actions.
+		A string is called through |denops#callback#call|.
 
 
 ------------------------------------------------------------------------------
@@ -285,16 +291,18 @@ NOTE: If you call Vim functions, it is not asynchronous.
 UI ATTRIBUTES                                              *ddt-ui-attributes*
 
                                                     *ddt-ui-attribute-actions*
-actions			(Record<string, function>)	(Required)
-		Defines UI actions.
+actions			(Record<string, string | function>)
+		Overwrites UI actions.
+		A string is interpreted as a Vim/Denops callback name.
 		The actions are called from |ddt#ui_action()|.
 
                                                    *ddt-ui-attribute-getInput*
-getInput		(function)			(Required)
-		Called when get input command line.
+getInput		(function)			(Optional)
+		Called when input is requested.
+		The default implementation returns an empty string.
 
                                                      *ddt-ui-attribute-redraw*
-redraw			(function)			(Required)
+redraw			(function)			(Optional)
 		Called when redraw UI.
 
 
