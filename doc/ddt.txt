@@ -202,6 +202,7 @@ DDU SOURCES                                                  *ddt-ddu-sources*
                                             *ddt-ddu-source-ddt_shell_history*
 ddt_shell_history
 		Gather shell history.
+		The newest history entries are returned first.
 
                                      *ddt-ddu-source-ddt_shell_history-params*
 
@@ -212,6 +213,8 @@ ddt_shell_history
 
 		paths	(string[])
 			History file path list.
+			Each path is expanded with |expand()|.
+			Non-existent files are ignored.
 
 			Default: []
 
@@ -221,7 +224,14 @@ ddt_tab
 
 ==============================================================================
 EXAMPLES                                                        *ddt-examples*
->
+>vim
+	call ddt#custom#load_config(
+	      \ expand('~/.config/nvim/ddt.ts'))
+
+	autocmd User DenopsReady ++once
+	      \ call ddt#start(#{
+	      \   ui: 'terminal',
+	      \ })
 <
 
 ==============================================================================
@@ -254,7 +264,8 @@ documentation.
 ------------------------------------------------------------------------------
 UI VARIABLES                                                *ddt-ui-variables*
 
-You can get UI information from variables.
+These variables are maintained by UI implementations.
+They may not exist until a UI has been started.
 
                                                *ddt-ui-variable-b:ddt_ui_name*
 b:ddt_ui_name		(string)

@@ -50,4 +50,11 @@ To use Vim/Neovim as "$EDITOR", install "vim-guise" is recommended.
 ### Config example
 
 ```vim
+	call ddt#custom#load_config(
+	      \ expand('~/.config/nvim/ddt.ts'))
+
+	autocmd User DenopsReady ++once
+	      \ call ddt#start(#{
+	      \   ui: 'terminal',
+	      \ })
 ```
