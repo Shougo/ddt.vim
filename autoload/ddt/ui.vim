@@ -49,7 +49,8 @@ function ddt#ui#_set_editor(nvim_server) abort
   " Set $EDITOR.
   let editor_command = ''
   if 'g:loaded_guise'->exists()
-    " Use guise instead
+    " Use "vim-guise" instead
+    " NOTE: "vim-guise" set $EDITOR itself.
   "elseif v:progname ==# 'nvim' && has('nvim-0.11')
   "      \ && a:nvim_server->expand()->filereadable()
   "  " Use clientserver for neovim
