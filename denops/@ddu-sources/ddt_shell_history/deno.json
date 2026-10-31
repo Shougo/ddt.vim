@@ -2,6 +2,6 @@
   "imports": {
     "@denops/std": "jsr:@denops/std@~8.2.0",
     "@shougo/ddu-vim": "jsr:@shougo/ddu-vim@~11.3.0",
-    "@std/assert": "jsr:@std/assert@~1.0.7"
+    "@std/assert": "jsr:@std/assert@~1.0.19"
   }
 }
