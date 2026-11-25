@@ -1,5 +1,10 @@
 # ddt.vim
 
+**Note**: Active developement has stopped. The only future changes will be bug
+fixes.
+
+Please see [goda-term.vim](https://github.com/Shougo/goda-term.vim)
+
 > Dark Deno Terminal interface for Vim/Neovim
 
 If you don't want to configure plugins, you don't have to use the plugin. It
